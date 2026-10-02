@@ -47,13 +47,14 @@ hl.bind(mainMod .. " + SHIFT + ALT + B", exec(browser .. " --incognito"), { desc
 hl.bind(mainMod .. " + SHIFT + N", exec(tui("nvim")), { description = "Editor" })
 
 -- Applications and TUIs.
-hl.bind(mainMod .. " + SHIFT + M", exec(launch_or_focus("^spotify$", "spotify")), { description = "Music" })
-hl.bind(mainMod .. " + SHIFT + D", exec(tui("lazydocker")), { description = "Docker" })
+-- hl.bind(mainMod .. " + SHIFT + M", exec(launch_or_focus("^spotify$", "spotify")), { description = "Music" })
+-- hl.bind(mainMod .. " + SHIFT + D", exec(tui("lazydocker")), { description = "Docker" })
 hl.bind(mainMod .. " + CTRL + T", exec(tui("btop")), { description = "Activity" })
 
 -- Web apps.
 hl.bind(mainMod .. " + SHIFT + A", exec(webapp("https://chatgpt.com")), { description = "ChatGPT" })
-hl.bind(mainMod .. " + SHIFT + Y", exec(webapp("https://youtube.com/")), { description = "YouTube" })
+hl.bind(mainMod .. " + SHIFT + C", exec(webapp("https://claude.ai")), { description = "Claude" })
+hl.bind(mainMod .. " + SHIFT + E", exec(webapp("https://mail.proton.me")), { description = "Proton Mail" })
 hl.bind(
 	mainMod .. " + SHIFT + ALT + G",
 	exec(webapp_or_focus("https://web.whatsapp.com/")),

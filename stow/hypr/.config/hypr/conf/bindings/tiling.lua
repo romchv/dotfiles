@@ -20,7 +20,15 @@ bind(
 
 bind(mainMod .. " + J", "Toggle window split", hl.dsp.layout("togglesplit"))
 bind(mainMod .. " + P", "Pseudo window", hl.dsp.window.pseudo())
-bind(mainMod .. " + T", "Toggle window floating/tiling", hl.dsp.window.float({ action = "toggle" }))
+-- Same geometry as the floating-window rule in windowrules.lua.
+bind(mainMod .. " + T", "Toggle window floating/tiling", function()
+	hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+	local window = hl.get_active_window()
+	if window and window.floating then
+		hl.dispatch(hl.dsp.window.resize({ x = 875, y = 600 }))
+		hl.dispatch(hl.dsp.window.center())
+	end
+end)
 bind(mainMod .. " + F", "Full screen", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 bind(mainMod .. " + ALT + F", "Full width", hl.dsp.window.fullscreen({ mode = "maximized" }))
 
@@ -156,7 +164,3 @@ for index = 1, 5 do
 		hl.dsp.group.active({ index = index })
 	)
 end
-
--- Not ported (Omarchy-only): tiled full screen (SUPER+CTRL+F), pop window out (SUPER+O),
--- save/restore window width (SUPER+ALT+Home / SUPER+Home), workspace layout toggle (SUPER+L),
--- monitor scaling up/down (SUPER+SLASH / SUPER+ALT+SLASH).

@@ -39,17 +39,3 @@ hl.bind(
 	exec("qs ipc call notifications toggleDnd"),
 	{ description = "Toggle Do Not Disturb" }
 )
-
--- Not ported (Omarchy-only), free to rebind to your own tools:
---   menus (SUPER+ALT+SPACE, SUPER+CTRL+C/O/H/S/R,
---     XF86PowerOff, SUPER+SHIFT+code:201, background SUPER+CTRL+SPACE, theme SUPER+SHIFT+CTRL+SPACE),
---   keybinding viewers (SUPER+ALT+K, SUPER+CTRL+K), emojis (SUPER+CTRL+E),
---   calculator (SUPER+CTRL+Q, XF86Calculator),
---   bar panels (SUPER+CTRL+A/B/D/W/P, SUPER+CTRL+ALT+D, SUPER+CTRL+1..9),
---   window transparency/gaps/square toggles (SUPER+[SHIFT/CTRL]+BACKSPACE),
---   idle toggle (SUPER+CTRL+I), laptop display (SUPER+CTRL+[ALT]+Delete), lid switch,
---   screen recording (ALT+PRINT), OCR (SUPER+CTRL+PRINT), webcam overlay (SUPER+ALT+code:34/35),
---   transcode (SUPER+CTRL+PERIOD), reminders (SUPER+CTRL+ALT+R, SUPER+SHIFT+CTRL+R),
---   time/battery/weather notifications (SUPER+CTRL+ALT+T/B/W), agent (SUPER+SHIFT+CTRL+A),
---   region-picker keyboard controls.
--- Activity (btop, SUPER+CTRL+T) moved to applications.lua.

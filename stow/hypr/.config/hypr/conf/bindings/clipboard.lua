@@ -1,7 +1,5 @@
 -- Universal clipboard: SUPER+C/V/X work in every app, including terminals.
--- Expects mainMod to be defined beforehand.
 
--- Tag terminal windows so they can be singled out below (terminals copy/paste
 -- with CTRL+Insert / SHIFT+Insert instead of CTRL+C / CTRL+V).
 --
 -- Send the shortcut as a down/up pair: Hyprland's send_shortcut can leave
@@ -56,4 +54,8 @@ hl.bind(
 hl.bind(mainMod .. " + X", send_shortcut_once("CTRL", "X"), { description = "Universal cut" })
 
 -- Clipboard history (cliphist): Quickshell picker, pastes the chosen entry.
-hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("qs ipc call clipboard toggle"), { description = "Clipboard history" })
+hl.bind(
+	mainMod .. " + CTRL + V",
+	hl.dsp.exec_cmd("qs ipc call clipboard toggle"),
+	{ description = "Clipboard history" }
+)
