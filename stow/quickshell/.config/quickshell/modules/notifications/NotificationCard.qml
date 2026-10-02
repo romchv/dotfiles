@@ -6,9 +6,10 @@ import Quickshell.Widgets
 import qs.config
 import qs.components
 
-// One notification popup: icon or image, summary, body, actions and a
-// countdown. Click runs the default action (or dismisses), right-click
+// One notification popup: icon or image, summary, body and a countdown.
+// Click runs the app's default action (or dismisses), right-click
 // dismisses; hovering pauses the countdown. Critical ones never expire.
+// Other actions aren't shown as buttons.
 Surface {
     id: card
 
@@ -18,7 +19,6 @@ Surface {
     readonly property bool critical: n.urgency === NotificationUrgency.Critical
     readonly property int timeout: n.expireTimeout > 0 ? n.expireTimeout : Style.notificationTimeout
     readonly property var defaultAction: n.actions.find(a => a.identifier === "default") ?? null
-    readonly property var buttons: n.actions.filter(a => a.identifier !== "default")
     readonly property string icon: {
         const i = n.appIcon;
         if (!i)
@@ -135,48 +135,6 @@ Surface {
                 opacity: 0.8
                 linkColor: card.t.text
                 onLinkActivated: link => Qt.openUrlExternally(link)
-            }
-
-            RowLayout {
-                visible: card.buttons.length > 0
-                Layout.fillWidth: true
-                Layout.topMargin: Style.space.sm
-                spacing: Style.space.controlGap
-
-                Repeater {
-                    model: card.buttons
-
-                    Rectangle {
-                        id: button
-
-                        required property var modelData
-                        readonly property var c: Style.controls
-
-                        Layout.fillWidth: true
-                        implicitHeight: Style.space.controlHeight
-                        radius: Style.radius
-                        color: Style.alpha(c.normalColor, buttonArea.containsMouse ? c.hoverCursorFillAlpha : c.normalFillAlpha)
-                        border.width: c.normalBorderWidth ?? 1
-                        border.color: Style.alpha(c.normalBorder, c.normalBorderAlpha)
-
-                        StyledText {
-                            anchors.centerIn: parent
-                            width: parent.width - Style.space.controlPaddingX * 2
-                            horizontalAlignment: Text.AlignHCenter
-                            text: button.modelData.text
-                            size: Style.font.bodySmall
-                            color: card.t.text
-                        }
-
-                        MouseArea {
-                            id: buttonArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: button.modelData.invoke()
-                        }
-                    }
-                }
             }
         }
     }
