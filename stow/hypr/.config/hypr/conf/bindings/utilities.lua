@@ -24,13 +24,22 @@ hl.bind(mainMod .. " + CTRL + L", exec("loginctl lock-session"), { description =
 
 -- Quickshell (IpcHandlers in ~/.config/quickshell).
 hl.bind(mainMod .. " + SPACE", exec("qs ipc call launcher toggle"), { description = "App launcher" })
+hl.bind(mainMod .. " + ESCAPE", exec("qs ipc call power toggle"), { description = "Power menu" })
 hl.bind(mainMod .. " + SHIFT + SPACE", exec("qs ipc call bar toggle"), { description = "Toggle bar" })
 hl.bind(mainMod .. " + COMMA", exec("qs ipc call notifications dismiss"), { description = "Dismiss notification" })
-hl.bind(mainMod .. " + SHIFT + COMMA", exec("qs ipc call notifications dismissAll"), { description = "Dismiss all notifications" })
-hl.bind(mainMod .. " + CTRL + COMMA", exec("qs ipc call notifications toggleDnd"), { description = "Toggle Do Not Disturb" })
+hl.bind(
+	mainMod .. " + SHIFT + COMMA",
+	exec("qs ipc call notifications dismissAll"),
+	{ description = "Dismiss all notifications" }
+)
+hl.bind(
+	mainMod .. " + CTRL + COMMA",
+	exec("qs ipc call notifications toggleDnd"),
+	{ description = "Toggle Do Not Disturb" }
+)
 
 -- Not ported (Omarchy-only), free to rebind to your own tools:
---   menus (SUPER+ALT+SPACE, SUPER+CTRL+C/O/H/S/R, SUPER+ESCAPE,
+--   menus (SUPER+ALT+SPACE, SUPER+CTRL+C/O/H/S/R,
 --     XF86PowerOff, SUPER+SHIFT+code:201, background SUPER+CTRL+SPACE, theme SUPER+SHIFT+CTRL+SPACE),
 --   keybinding viewers (SUPER+K, SUPER+ALT+K, SUPER+CTRL+K), emojis (SUPER+CTRL+E),
 --   calculator (SUPER+CTRL+Q, XF86Calculator),

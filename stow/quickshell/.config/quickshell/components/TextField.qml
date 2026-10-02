@@ -12,6 +12,7 @@ FocusScope {
     property string placeholder: ""
     property string icon: ""
     property bool password: false
+    property bool showCursor: true
     property color textColor: Style.colors.foreground ?? "white"
 
     signal accepted
@@ -81,14 +82,14 @@ FocusScope {
         cursorDelegate: Rectangle {
             width: 1
             color: root.textColor
-            visible: input.activeFocus && blink.on && (input.text !== "" || root.horizontalAlignment !== TextInput.AlignHCenter)
+            visible: root.showCursor && input.activeFocus && blink.on && (input.text !== "" || root.horizontalAlignment !== TextInput.AlignHCenter)
 
             Timer {
                 id: blink
                 property bool on: true
                 interval: 530
                 repeat: true
-                running: input.activeFocus
+                running: root.showCursor && input.activeFocus
                 onTriggered: on = !on
             }
 

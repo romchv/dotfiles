@@ -29,8 +29,7 @@ Scope {
         Picker {
             id: picker
 
-            icon: "󰅍"
-            placeholder: "Search clipboard"
+            placeholder: "Clipboard..."
             emptyText: Clipboard.entries.length ? "No matches" : "Clipboard history is empty"
             hint: "Enter paste · Shift+Del delete"
             items: Clipboard.search(query)

@@ -13,8 +13,7 @@ PanelWindow {
 
     property var items: []
     property string query: ""
-    property string placeholder: "Search"
-    property string icon: "󰍉"
+    property string placeholder: "Search..."
     property string emptyText: "No matches"
     property string hint: "" // small line under the list, e.g. extra keys
     property alias delegate: list.delegate
@@ -89,9 +88,12 @@ PanelWindow {
                 id: field
 
                 Layout.fillWidth: true
-                icon: picker.icon
                 placeholder: picker.placeholder
                 textColor: picker.section.text
+                // Blends into the card: no fill, border or cursor.
+                fillColor: "transparent"
+                borderWidth: 0
+                showCursor: false
                 focus: true
                 Component.onCompleted: input.forceActiveFocus()
 

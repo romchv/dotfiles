@@ -2,40 +2,38 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
-import Quickshell.Widgets
 import qs.config
 import qs.components
 import qs.services
 
-// App launcher. Opened by SUPER+SPACE (`qs ipc call launcher toggle`) or
-// the bar's apps icon. Keys are Picker's.
+// Power menu: SUPER+ESCAPE (`qs ipc call power toggle`). Type to filter
+// lock / suspend / hibernate / log out / reboot / shut down; Enter runs it.
 Scope {
     IpcHandler {
-        target: "launcher"
+        target: "power"
 
         function toggle(): void {
-            Panels.toggle("launcher");
+            Panels.toggle("power");
         }
         function open(): void {
-            Panels.open("launcher");
+            Panels.open("power");
         }
         function close(): void {
             Panels.close();
         }
     }
 
-    // The window only exists while open, so every open starts fresh.
     LazyLoader {
-        active: Panels.current === "launcher"
+        active: Panels.current === "power"
 
         Picker {
-            placeholder: "App..."
-            emptyText: "No matching apps"
-            items: Apps.search(query)
+            placeholder: "Power options..."
+            emptyText: "No matching options"
+            items: Power.search(query)
 
-            onPicked: entry => {
-                Apps.launch(entry);
+            onPicked: action => {
                 Panels.close();
+                Power.run(action);
             }
             onDismissed: Panels.close()
 
@@ -44,12 +42,14 @@ Scope {
 
                 RowLayout {
                     anchors.fill: parent
-                    spacing: Style.space.xxl
+                    spacing: Style.space.lg
 
-                    IconImage {
-                        implicitSize: Style.font.display
-                        source: Quickshell.iconPath(row.modelData.icon, "application-x-executable")
-                        asynchronous: true
+                    StyledText {
+                        Layout.preferredWidth: Style.font.display
+                        horizontalAlignment: Text.AlignHCenter
+                        text: row.modelData.icon
+                        size: Style.font.icon
+                        color: row.textColor
                     }
 
                     StyledText {
