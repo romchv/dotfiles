@@ -72,6 +72,13 @@ Scope {
                 height: parent.height
 
                 BarButton {
+                    visible: Notifications.dnd
+                    text: "󰂛"
+                    tooltip: "Do Not Disturb (click to turn off)"
+                    onClicked: Notifications.dnd = false
+                }
+
+                BarButton {
                     readonly property var adapter: Bluetooth.defaultAdapter
                     readonly property bool connected: Bluetooth.devices.values.some(d => d.connected)
 

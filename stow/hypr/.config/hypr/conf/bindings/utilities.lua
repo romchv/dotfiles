@@ -25,13 +25,15 @@ hl.bind(mainMod .. " + CTRL + L", exec("loginctl lock-session"), { description =
 -- Quickshell (IpcHandlers in ~/.config/quickshell).
 hl.bind(mainMod .. " + SPACE", exec("qs ipc call launcher toggle"), { description = "App launcher" })
 hl.bind(mainMod .. " + SHIFT + SPACE", exec("qs ipc call bar toggle"), { description = "Toggle bar" })
+hl.bind(mainMod .. " + COMMA", exec("qs ipc call notifications dismiss"), { description = "Dismiss notification" })
+hl.bind(mainMod .. " + SHIFT + COMMA", exec("qs ipc call notifications dismissAll"), { description = "Dismiss all notifications" })
+hl.bind(mainMod .. " + CTRL + COMMA", exec("qs ipc call notifications toggleDnd"), { description = "Toggle Do Not Disturb" })
 
 -- Not ported (Omarchy-only), free to rebind to your own tools:
 --   menus (SUPER+ALT+SPACE, SUPER+CTRL+C/O/H/S/R, SUPER+ESCAPE,
 --     XF86PowerOff, SUPER+SHIFT+code:201, background SUPER+CTRL+SPACE, theme SUPER+SHIFT+CTRL+SPACE),
 --   keybinding viewers (SUPER+K, SUPER+ALT+K, SUPER+CTRL+K), emojis (SUPER+CTRL+E),
 --   calculator (SUPER+CTRL+Q, XF86Calculator),
---   notifications (SUPER+comma variants),
 --   bar panels (SUPER+CTRL+A/B/D/W/P, SUPER+CTRL+ALT+D, SUPER+CTRL+1..9),
 --   window transparency/gaps/square toggles (SUPER+[SHIFT/CTRL]+BACKSPACE),
 --   idle/nightlight toggles (SUPER+CTRL+I/N), laptop display (SUPER+CTRL+[ALT]+Delete), lid switch,

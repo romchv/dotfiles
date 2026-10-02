@@ -113,6 +113,7 @@ Singleton {
         readonly property int launcherWidth: root._sp("launcherWidth", 360)
         readonly property int launcherRowHeight: root._sp("launcherRowHeight", 40)
         readonly property int dialogWidth: root._sp("dialogWidth", 380)
+        readonly property int notificationWidth: root._sp("notificationWidth", 360)
         readonly property int lockFieldWidth: root._sp("lockFieldWidth", 320)
         readonly property int osdWidth: root._sp("osdWidth", 240)
         readonly property int osdMargin: root._sp("osdMargin", 60)
@@ -121,6 +122,11 @@ Singleton {
     // Lockscreen wallpaper treatment: blur 0..1, darkening 0..1.
     readonly property real lockBlur: theme.lock?.blur ?? 0.8
     readonly property real lockDim: theme.lock?.dim ?? 0.35
+
+    // Notification popups: default display time (ms) when the app sets none,
+    // and how many show at once.
+    readonly property int notificationTimeout: theme.notifications?.timeout ?? 5000
+    readonly property int notificationMax: theme.notifications?.max ?? 5
 
     // Rows the launcher shows before scrolling.
     readonly property int launcherRows: theme.launcher?.rows ?? 8

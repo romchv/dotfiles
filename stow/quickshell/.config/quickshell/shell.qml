@@ -4,6 +4,7 @@ import qs.modules.bar
 import qs.modules.clipboard
 import qs.modules.launcher
 import qs.modules.lock
+import qs.modules.notifications
 import qs.modules.osd
 import qs.modules.polkit
 
@@ -13,6 +14,7 @@ ShellRoot {
     ClipboardPicker {}
     Launcher {}
     Lock {}
+    NotificationPopups {}
     Osd {}
     Polkit {}
 }
