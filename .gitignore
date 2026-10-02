@@ -1,0 +1,6 @@
+# herdr: only keep config.toml
+stow/herdr/.config/herdr/*
+!stow/herdr/.config/herdr/config.toml
+
+# zsh completion cache, regenerated automatically
+.zcompdump*

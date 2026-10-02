@@ -1,0 +1,4 @@
+brave-bin
+localsend
+nordvpn-bin
+tree-sitter-cli-git
