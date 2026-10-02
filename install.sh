@@ -26,6 +26,7 @@ run() {
 run 02-yay
 run 03-packages
 run 04-dotfiles
+run 05-system
 
 echo
 echo "Setup complete"

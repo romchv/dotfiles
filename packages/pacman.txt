@@ -17,6 +17,9 @@ wl-clipboard
 grim
 slurp
 quickshell
+qt6-imageformats
+greetd
+cage
 bluetui
 bluez
 bluez-utils

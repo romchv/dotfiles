@@ -1,0 +1,29 @@
+#!/bin/bash
+# Copy the login screen's files to /etc/greetd: the Quickshell greeter
+# (greeter.qml and what it imports), the current theme and the wallpaper.
+# greetd runs the greeter as its own user, which can't read ~.
+# scripts/05-system.sh makes those folders yours, so no sudo is needed.
+# theme-switch runs this; run it by hand after changing the Quickshell config.
+
+set -euo pipefail
+
+dest=${GREETER_DIR:-/etc/greetd} # override for testing
+if [[ ! -w $dest/quickshell || ! -w $dest/theme ]]; then
+  echo "greeter-sync: $dest isn't set up, run scripts/05-system.sh" >&2
+  exit 1
+fi
+
+config=$HOME/.config/quickshell
+rsync -rL --delete --chmod=D755,F644 \
+  --include='/greeter.qml' --include='/config/***' --include='/components/***' --exclude='*' \
+  "$config/" "$dest/quickshell/"
+
+state=${XDG_STATE_HOME:-$HOME/.local/state}/theme/current
+install -m644 "$state/shell.json" "$dest/theme/shell.json"
+
+# First wallpaper in hyprpaper.conf. Saved without extension: Qt detects the format.
+wallpaper=$(sed -n 's/^\s*path\s*=\s*//p' "$HOME/.config/hypr/hyprpaper.conf" 2>/dev/null | head -n1)
+wallpaper=${wallpaper/#\~/$HOME}
+if [[ -f $wallpaper ]]; then
+  install -m644 "$wallpaper" "$dest/theme/wallpaper"
+fi

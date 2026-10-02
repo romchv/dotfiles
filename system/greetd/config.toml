@@ -1,0 +1,11 @@
+# greetd: Quickshell login screen (greeter.qml) inside cage, then
+# start-hyprland as the user. Installed by scripts/05-system.sh, which
+# fills in the username; the greeter's files are kept in sync by greeter-sync.
+# systemd-cat keeps cage's output off the console (journalctl -t greeter).
+
+[terminal]
+vt = 1
+
+[default_session]
+user = "greeter"
+command = "systemd-cat --identifier=greeter cage -s -- env QT_WAYLAND_DISABLE_WINDOWDECORATION=1 QS_THEME_FILE=/etc/greetd/theme/shell.json QS_GREETER_WALLPAPER=/etc/greetd/theme/wallpaper QS_GREETER_USER=@USER@ qs -p /etc/greetd/quickshell/greeter.qml"
