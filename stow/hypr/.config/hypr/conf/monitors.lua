@@ -1,20 +1,8 @@
--- hl.monitor({
--- 	output = "DP-2",
--- 	mode = "1920x1080@144",
--- 	position = "0x0",
--- 	scale = 1,
--- })
---
--- hl.monitor({
--- 	output = "HDMI-A-1",
--- 	mode = "1920x1080@60",
--- 	position = "-1920x0",
--- 	scale = 1,
--- })
+-- Pick the monitor layout for this machine: a built-in panel (eDP) means laptop.
+local laptop = os.execute("ls /sys/class/drm | grep -q eDP")
 
-hl.monitor({
-	output = "eDP-1",
-	mode = "1366x768@60",
-	position = "0x0",
-	scale = 1,
-})
+if laptop == true or laptop == 0 then
+	require("conf.monitors-laptop")
+else
+	require("conf.monitors-desktop")
+end
