@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Hardware Locality lstopo
+# Hidden from app launchers (overrides /usr/share/applications/lstopo.desktop).
+NoDisplay=true

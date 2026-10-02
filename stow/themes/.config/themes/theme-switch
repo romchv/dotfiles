@@ -124,6 +124,51 @@ def render(text, c, tpl_name):
     return out
 
 
+# ---------- shell.json (Quickshell reads JSON, not TOML) ----------
+
+def camel(key):
+    head, *rest = key.replace("_", "-").split("-")
+    return head + "".join(w.capitalize() for w in rest)
+
+
+def qml_color(value):
+    """First stop of a solid color or Hyprland gradient, as #rrggbb / #aarrggbb.
+
+    QML borders can't be gradients, so the shell uses the leading stop."""
+    token = value.split()[0]
+    m = re.fullmatch(r"rgba?\(([0-9a-fA-F]{6})([0-9a-fA-F]{2})?\)", token)
+    if m:
+        return f"#{m.group(2) or ''}{m.group(1)}".lower()
+    if HEX.match(token):
+        return token.lower()
+    return value
+
+
+def shell_json(toml_text, colors):
+    """shell.toml -> JSON with camelCase keys, `section.key` refs resolved."""
+    raw = tomllib.loads(toml_text)
+
+    def lookup(ref):
+        section, _, key = ref.partition(".")
+        val = raw.get(section, {}).get(key)
+        return lookup(val) if isinstance(val, str) and "." in val and val.split(".")[0] in raw else val
+
+    data = {"colors": {camel(k): v for k, v in colors.items() if isinstance(v, str) and HEX.match(v)},
+            "mode": colors["mode"]}
+    for section, values in raw.items():
+        if not isinstance(values, dict):
+            continue
+        out = {}
+        for k, v in values.items():
+            if isinstance(v, str):
+                if v.split(".")[0] in raw:
+                    v = lookup(v)
+                v = qml_color(v)
+            out[camel(k)] = v
+        data[camel(section)] = out
+    return json.dumps(data, indent=2) + "\n"
+
+
 def build(name):
     """Return {output_filename: content} for a theme, without writing anything."""
     c = load_colors(name)
@@ -136,6 +181,8 @@ def build(name):
         p = THEMES / name / extra
         if p.exists():
             out[extra] = p.read_text()
+    if "shell.toml" in out:
+        out["shell.json"] = shell_json(out["shell.toml"], c)
     out["colors.toml"] = (THEMES / name / "colors.toml").read_text()
     out["name"] = name + "\n"
     return out, c
@@ -232,6 +279,9 @@ def apply(name):
             files["icons.theme"].strip())
 
     apply_browser(c)
+    # Login screen copy (/etc/greetd), once scripts/05-system.sh has set it up.
+    if os.access("/etc/greetd/theme", os.W_OK):
+        run("greeter-sync")
     print(f"theme: {name}")
 
 

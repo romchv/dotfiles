@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Foot Server
+# Hidden from app launchers (overrides /usr/share/applications/foot-server.desktop).
+NoDisplay=true

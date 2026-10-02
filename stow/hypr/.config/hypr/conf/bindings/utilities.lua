@@ -22,12 +22,16 @@ end, { description = "Reset zoom" })
 -- Needs a locker that listens to logind (e.g. hypridle + hyprlock).
 hl.bind(mainMod .. " + CTRL + L", exec("loginctl lock-session"), { description = "Lock system" })
 
+-- Quickshell (IpcHandlers in ~/.config/quickshell).
+hl.bind(mainMod .. " + SPACE", exec("qs ipc call launcher toggle"), { description = "App launcher" })
+hl.bind(mainMod .. " + SHIFT + SPACE", exec("qs ipc call bar toggle"), { description = "Toggle bar" })
+
 -- Not ported (Omarchy-only), free to rebind to your own tools:
---   menus (SUPER+SPACE, SUPER+ALT+SPACE app launcher, SUPER+CTRL+C/O/H/S/R, SUPER+ESCAPE,
+--   menus (SUPER+ALT+SPACE, SUPER+CTRL+C/O/H/S/R, SUPER+ESCAPE,
 --     XF86PowerOff, SUPER+SHIFT+code:201, background SUPER+CTRL+SPACE, theme SUPER+SHIFT+CTRL+SPACE),
 --   keybinding viewers (SUPER+K, SUPER+ALT+K, SUPER+CTRL+K), emojis (SUPER+CTRL+E),
 --   calculator (SUPER+CTRL+Q, XF86Calculator),
---   notifications (SUPER+comma variants), bar toggle (SUPER+SHIFT+SPACE),
+--   notifications (SUPER+comma variants),
 --   bar panels (SUPER+CTRL+A/B/D/W/P, SUPER+CTRL+ALT+D, SUPER+CTRL+1..9),
 --   window transparency/gaps/square toggles (SUPER+[SHIFT/CTRL]+BACKSPACE),
 --   idle/nightlight toggles (SUPER+CTRL+I/N), laptop display (SUPER+CTRL+[ALT]+Delete), lid switch,

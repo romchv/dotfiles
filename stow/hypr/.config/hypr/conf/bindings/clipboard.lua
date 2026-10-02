@@ -55,5 +55,5 @@ hl.bind(
 )
 hl.bind(mainMod .. " + X", send_shortcut_once("CTRL", "X"), { description = "Universal cut" })
 
--- Not ported (Omarchy-only): clipboard manager (SUPER+CTRL+V). Install cliphist
--- and bind it to a launcher of your choice if you want one.
+-- Clipboard history (cliphist): Quickshell picker, pastes the chosen entry.
+hl.bind(mainMod .. " + CTRL + V", hl.dsp.exec_cmd("qs ipc call clipboard toggle"), { description = "Clipboard history" })

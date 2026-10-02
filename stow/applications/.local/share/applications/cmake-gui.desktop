@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=CMake
+# Hidden from app launchers (overrides /usr/share/applications/cmake-gui.desktop).
+NoDisplay=true

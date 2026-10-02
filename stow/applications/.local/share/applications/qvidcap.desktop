@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Qt V4L2 video capture utility
+# Hidden from app launchers (overrides /usr/share/applications/qvidcap.desktop).
+NoDisplay=true

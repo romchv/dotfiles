@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Avahi SSH Server Browser
+# Hidden from app launchers (overrides /usr/share/applications/bssh.desktop).
+NoDisplay=true

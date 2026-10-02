@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Foot Client
+# Hidden from app launchers (overrides /usr/share/applications/footclient.desktop).
+NoDisplay=true
