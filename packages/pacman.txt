@@ -4,6 +4,7 @@ noto-fonts-emoji
 noto-fonts-cjk
 ttf-liberation
 ttf-jetbrains-mono-nerd
+yaru-icon-theme
 mpv
 imv
 hyprland
@@ -21,9 +22,12 @@ quickshell
 qt6-imageformats
 greetd
 cage
+rsync
 bluetui
 bluez
 bluez-utils
+networkmanager
+upower
 wiremix
 wireplumber
 brightnessctl
@@ -35,6 +39,7 @@ nautilus
 neovim
 foot
 stow
+python
 tmux
 herdr
 yazi

@@ -16,6 +16,10 @@ if [[ -e "$param" ]]; then
   echo N | sudo tee "$param" >/dev/null
 fi
 
+# Services the shell relies on: wifi (NetworkManager) and bluetooth.
+echo "Enabling NetworkManager and bluetooth..."
+sudo systemctl enable NetworkManager.service bluetooth.service
+
 # Login screen: greetd shows the Quickshell greeter (greeter.qml) in cage,
 # then starts Hyprland. The greeter's copies of the config and theme live
 # in /etc/greetd, owned by you so greeter-sync / theme-switch can refresh

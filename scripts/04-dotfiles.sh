@@ -39,3 +39,10 @@ done
 if [[ -d "$backup_dir" ]]; then
   echo "Old files were moved to $backup_dir"
 fi
+
+# First install: render a theme, so apps (and Quickshell, and the greeter
+# set up by 05-system.sh) have their colors.
+if [[ ! -f ${XDG_STATE_HOME:-$HOME/.local/state}/theme/current/name ]]; then
+  echo "Applying the default theme..."
+  "$HOME/.local/bin/theme-switch" black-sand
+fi
