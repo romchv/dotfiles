@@ -1,4 +1,4 @@
-brave-bin
+brave-origin-bin
 localsend
 nordvpn-bin
 tree-sitter-cli-git
