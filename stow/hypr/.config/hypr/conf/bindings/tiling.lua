@@ -29,9 +29,9 @@ bind(mainMod .. " + RIGHT", "Focus on right window", hl.dsp.focus({ direction = 
 bind(mainMod .. " + UP", "Focus on above window", hl.dsp.focus({ direction = "u" }))
 bind(mainMod .. " + DOWN", "Focus on below window", hl.dsp.focus({ direction = "d" }))
 
--- code:10..19 are the number row keys 1..0, independent of keyboard layout.
+-- Number row keys 1..0. Named keys (not code:N) so `hyprctl binds` lists them.
 for workspace = 1, 10 do
-	local key = "code:" .. tostring(workspace + 9)
+	local key = tostring(workspace % 10)
 	bind(
 		mainMod .. " + " .. key,
 		"Switch to workspace " .. workspace,
@@ -78,50 +78,50 @@ bind("ALT + SHIFT + TAB", "Reveal active window on top", hl.dsp.window.bring_to_
 bind("CTRL + ALT + TAB", "Focus on next monitor", hl.dsp.focus({ monitor = "+1" }))
 bind("CTRL + ALT + SHIFT + TAB", "Focus on previous monitor", hl.dsp.focus({ monitor = "-1" }))
 
--- code:20 / code:21 are the "-" and "=" keys.
-bind(mainMod .. " + code:20", "Expand window left", hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
-bind(mainMod .. " + code:21", "Shrink window left", hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
-bind(mainMod .. " + SHIFT + code:20", "Shrink window up", hl.dsp.window.resize({ x = 0, y = -100, relative = true }))
-bind(mainMod .. " + SHIFT + code:21", "Expand window down", hl.dsp.window.resize({ x = 0, y = 100, relative = true }))
+-- The "-" and "=" keys.
+bind(mainMod .. " + MINUS", "Expand window left", hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
+bind(mainMod .. " + EQUAL", "Shrink window left", hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
+bind(mainMod .. " + SHIFT + MINUS", "Shrink window up", hl.dsp.window.resize({ x = 0, y = -100, relative = true }))
+bind(mainMod .. " + SHIFT + EQUAL", "Expand window down", hl.dsp.window.resize({ x = 0, y = 100, relative = true }))
 
 bind(
-	mainMod .. " + ALT + code:20",
+	mainMod .. " + ALT + MINUS",
 	"Expand window left a little",
 	hl.dsp.window.resize({ x = -25, y = 0, relative = true })
 )
 bind(
-	mainMod .. " + ALT + code:21",
+	mainMod .. " + ALT + EQUAL",
 	"Shrink window left a little",
 	hl.dsp.window.resize({ x = 25, y = 0, relative = true })
 )
 bind(
-	mainMod .. " + SHIFT + ALT + code:20",
+	mainMod .. " + SHIFT + ALT + MINUS",
 	"Shrink window up a little",
 	hl.dsp.window.resize({ x = 0, y = -25, relative = true })
 )
 bind(
-	mainMod .. " + SHIFT + ALT + code:21",
+	mainMod .. " + SHIFT + ALT + EQUAL",
 	"Expand window down a little",
 	hl.dsp.window.resize({ x = 0, y = 25, relative = true })
 )
 
 bind(
-	mainMod .. " + CTRL + code:20",
+	mainMod .. " + CTRL + MINUS",
 	"Expand window left a lot",
 	hl.dsp.window.resize({ x = -300, y = 0, relative = true })
 )
 bind(
-	mainMod .. " + CTRL + code:21",
+	mainMod .. " + CTRL + EQUAL",
 	"Shrink window left a lot",
 	hl.dsp.window.resize({ x = 300, y = 0, relative = true })
 )
 bind(
-	mainMod .. " + CTRL + SHIFT + code:20",
+	mainMod .. " + CTRL + SHIFT + MINUS",
 	"Shrink window up a lot",
 	hl.dsp.window.resize({ x = 0, y = -300, relative = true })
 )
 bind(
-	mainMod .. " + CTRL + SHIFT + code:21",
+	mainMod .. " + CTRL + SHIFT + EQUAL",
 	"Expand window down a lot",
 	hl.dsp.window.resize({ x = 0, y = 300, relative = true })
 )
@@ -151,7 +151,7 @@ bind(mainMod .. " + ALT + mouse_up", "Previous window in group", hl.dsp.group.pr
 
 for index = 1, 5 do
 	bind(
-		mainMod .. " + ALT + code:" .. tostring(index + 9),
+		mainMod .. " + ALT + " .. tostring(index % 10),
 		"Switch to group window " .. index,
 		hl.dsp.group.active({ index = index })
 	)
