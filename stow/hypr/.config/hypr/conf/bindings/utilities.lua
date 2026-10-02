@@ -26,6 +26,7 @@ hl.bind(mainMod .. " + CTRL + L", exec("loginctl lock-session"), { description =
 hl.bind(mainMod .. " + SPACE", exec("qs ipc call launcher toggle"), { description = "App launcher" })
 hl.bind(mainMod .. " + ESCAPE", exec("qs ipc call power toggle"), { description = "Power menu" })
 hl.bind(mainMod .. " + K", exec("qs ipc call keybinds toggle"), { description = "Keybind cheatsheet" })
+hl.bind(mainMod .. " + CTRL + N", exec("qs ipc call nightlight toggle"), { description = "Toggle night light" })
 hl.bind(mainMod .. " + SHIFT + SPACE", exec("qs ipc call bar toggle"), { description = "Toggle bar" })
 hl.bind(mainMod .. " + COMMA", exec("qs ipc call notifications dismiss"), { description = "Dismiss notification" })
 hl.bind(
@@ -46,7 +47,7 @@ hl.bind(
 --   calculator (SUPER+CTRL+Q, XF86Calculator),
 --   bar panels (SUPER+CTRL+A/B/D/W/P, SUPER+CTRL+ALT+D, SUPER+CTRL+1..9),
 --   window transparency/gaps/square toggles (SUPER+[SHIFT/CTRL]+BACKSPACE),
---   idle/nightlight toggles (SUPER+CTRL+I/N), laptop display (SUPER+CTRL+[ALT]+Delete), lid switch,
+--   idle toggle (SUPER+CTRL+I), laptop display (SUPER+CTRL+[ALT]+Delete), lid switch,
 --   screen recording (ALT+PRINT), OCR (SUPER+CTRL+PRINT), webcam overlay (SUPER+ALT+code:34/35),
 --   transcode (SUPER+CTRL+PERIOD), reminders (SUPER+CTRL+ALT+R, SUPER+SHIFT+CTRL+R),
 --   time/battery/weather notifications (SUPER+CTRL+ALT+T/B/W), agent (SUPER+SHIFT+CTRL+A),

@@ -11,6 +11,7 @@ hyprland
 hyprpicker
 hyprpaper
 hypridle
+hyprsunset
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk
 cliphist

@@ -19,6 +19,15 @@ Scope {
         }
     }
 
+    // Lives here because the bar shows the night light state.
+    IpcHandler {
+        target: "nightlight"
+
+        function toggle(): void {
+            NightLight.toggle();
+        }
+    }
+
     Variants {
         model: Quickshell.screens
 
@@ -53,7 +62,29 @@ Scope {
                 }
             }
 
+            // Status toggles sit beside the clock without pushing it off center.
             Row {
+                anchors.right: center.left
+                height: parent.height
+
+                BarButton {
+                    visible: Notifications.dnd
+                    text: "󰂛"
+                    tooltip: "Do Not Disturb (click to turn off)"
+                    onClicked: Notifications.dnd = false
+                }
+
+                BarButton {
+                    visible: NightLight.enabled
+                    text: "\u{F0594}"
+                    tooltip: "Night light (click to turn off)"
+                    onClicked: NightLight.enabled = false
+                }
+            }
+
+            Row {
+                id: center
+
                 anchors.centerIn: parent
                 height: parent.height
 
@@ -73,13 +104,6 @@ Scope {
 
                 Tray {
                     height: parent.height
-                }
-
-                BarButton {
-                    visible: Notifications.dnd
-                    text: "󰂛"
-                    tooltip: "Do Not Disturb (click to turn off)"
-                    onClicked: Notifications.dnd = false
                 }
 
                 BarButton {
