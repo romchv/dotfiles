@@ -68,6 +68,8 @@ Scope {
         // The keybind's brightnessctl write and this call race each other, so
         // show the current value now and follow the change for a moment.
         function brightness(): void {
+            if (!Brightness.available) // desktop: no backlight
+                return;
             root.brightnessUntil = Date.now() + 1000;
             root.show(Brightness.icon, Brightness.value);
         }

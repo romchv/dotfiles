@@ -37,7 +37,7 @@ PopupWindow {
             id: label
             anchors.centerIn: parent
             text: root.text
-            size: Style.font.bodySmall
+            size: Style.font.subtitle
             color: Style.tooltip.text
         }
     }

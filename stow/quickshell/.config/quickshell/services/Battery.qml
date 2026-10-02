@@ -23,12 +23,11 @@ Singleton {
     readonly property bool pluggedIn: !UPower.onBattery
     readonly property bool low: !pluggedIn && percent <= 20
 
+    // Plug while on AC (charging or not), else the battery at its charge level.
     readonly property string icon: {
-        const step = Math.max(0, Math.min(9, Math.ceil(level * 10) - 1));
-        if (charging)
-            return ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"][step];
         if (pluggedIn)
             return "󰚥";
+        const step = Math.max(0, Math.min(9, Math.ceil(level * 10) - 1));
         return ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"][step];
     }
 

@@ -71,6 +71,10 @@ Scope {
                 anchors.right: parent.right
                 height: parent.height
 
+                Tray {
+                    height: parent.height
+                }
+
                 BarButton {
                     visible: Notifications.dnd
                     text: "󰂛"
@@ -103,17 +107,16 @@ Scope {
                 }
 
                 BarButton {
-                    visible: Battery.available // laptops only
-                    text: Battery.icon
-                    suffix: `${Battery.percent}%`
-                    size: Style.font.iconMedium - 1
-                    tooltip: Battery.status
-                    label.color: Battery.low ? Style.bar.active : (Style.bar.text ?? Style.colors.foreground)
+                    text: "󰍛"
+                    onClicked: Launch.tui("btop")
                 }
 
                 BarButton {
-                    text: "󰍛"
-                    onClicked: Launch.tui("btop")
+                    visible: Battery.available // laptops only
+                    text: Battery.icon
+                    size: Style.font.iconMedium - 1
+                    tooltip: `${Battery.percent}% · ${Battery.status}`
+                    label.color: Battery.low ? Style.bar.active : (Style.bar.text ?? Style.colors.foreground)
                 }
 
                 Item {

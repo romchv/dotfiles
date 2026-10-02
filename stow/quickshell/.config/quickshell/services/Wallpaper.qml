@@ -23,10 +23,11 @@ Singleton {
         onLoaded: {
             const found = {};
             for (const block of text().split(/\}/)) {
-                const file = block.match(/^\s*path\s*=\s*(.+?)\s*$/m)?.[1];
+                // [ \t] not \s: an empty value must not run on into the next line.
+                const file = block.match(/^[ \t]*path[ \t]*=[ \t]*(.+?)[ \t]*$/m)?.[1];
                 if (!file)
                     continue;
-                const monitor = block.match(/^\s*monitor\s*=\s*(.*?)\s*$/m)?.[1] ?? "";
+                const monitor = block.match(/^[ \t]*monitor[ \t]*=[ \t]*(.*?)[ \t]*$/m)?.[1] ?? "";
                 found[monitor] = "file://" + file.replace(/^~/, Quickshell.env("HOME"));
             }
             root.paths = found;

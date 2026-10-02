@@ -110,6 +110,7 @@ Singleton {
         readonly property int panelGap: root._sp("panelGap", 14)
         readonly property int panelPadding: root._sp("panelPadding", 18)
         readonly property int popupPadding: root._sp("popupPadding", 14)
+        readonly property int dropdownWidth: root._sp("dropdownWidth", 240)
         readonly property int launcherWidth: root._sp("launcherWidth", 360)
         readonly property int launcherRowHeight: root._sp("launcherRowHeight", 40)
         readonly property int dialogWidth: root._sp("dialogWidth", 380)
