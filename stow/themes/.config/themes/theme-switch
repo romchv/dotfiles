@@ -1,0 +1,263 @@
+#!/usr/bin/env python3
+"""Render ~/.config/themes/templates/*.tpl with a theme's colors.toml and apply it.
+
+  theme-switch            list themes (current one marked)
+  theme-switch <name>     switch to <name>
+  theme-switch --reapply  re-render the current theme (after editing a template)
+
+A file in themes/<name>/ named like a rendered output (e.g. neovim.lua,
+btop.theme) is copied as-is instead of rendering the template.
+"""
+
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+HOME = Path.home()
+THEMES = Path(__file__).resolve().parent
+TEMPLATES = THEMES / "templates"
+STATE = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "theme"
+CURRENT = STATE / "current"
+
+HEX = re.compile(r"^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$")
+PLACEHOLDER = re.compile(r"\{\{\s*(.*?)\s*\}\}")
+
+
+# ---------- colors ----------
+
+def rgb(hex_):
+    h = hex_.lstrip("#")
+    return tuple(int(h[i : i + 2], 16) for i in (0, 2, 4))
+
+
+def to_hex(r, g, b):
+    return "#{:02x}{:02x}{:02x}".format(*(max(0, min(255, round(c))) for c in (r, g, b)))
+
+
+def mix(a, b, pct):
+    """a blended toward b by pct percent."""
+    p = pct / 100
+    return to_hex(*(x * (1 - p) + y * p for x, y in zip(rgb(a), rgb(b))))
+
+
+def load_colors(name):
+    with open(THEMES / name / "colors.toml", "rb") as f:
+        c = tomllib.load(f)
+    c.setdefault("mode", "dark")
+    # Keys some templates expect but colors.toml doesn't always define.
+    c.setdefault("purple", c.get("magenta"))
+    c.setdefault("bright_purple", c.get("bright_magenta"))
+    c.setdefault("bright_orange", c.get("orange"))
+    c.setdefault("selection_background", c.get("selection"))
+    c.setdefault("selection_foreground", c.get("bright_foreground", c.get("foreground")))
+    c["theme_type"] = c["mode"]
+    c["theme_name"] = name
+    return c
+
+
+# ---------- gradients (Hyprland style: "rgba(..) rgba(..) 45deg") ----------
+
+def parse_gradient(colors, key, fallback):
+    spec = colors.get(key) or colors.get(fallback, fallback)
+    parts = spec.split()
+    angle = None
+    if parts and parts[-1].endswith("deg"):
+        angle = int(parts.pop()[:-3])
+    stops = [f"rgb({p[1:]})" if HEX.match(p) else p for p in parts]
+    return stops, angle
+
+
+def hypr_gradient(colors, key, fallback):
+    stops, angle = parse_gradient(colors, key, fallback)
+    if len(stops) == 1 and angle is None:
+        return f'"{stops[0]}"'
+    quoted = ", ".join(f'"{s}"' for s in stops)
+    return f"{{ colors = {{ {quoted} }}, angle = {angle or 0} }}"
+
+
+def shell_gradient(colors, key, fallback):
+    spec = colors.get(key) or colors.get(fallback, fallback)
+    return spec
+
+
+# ---------- rendering ----------
+
+def resolve(expr, c):
+    args = expr.split()
+    fn = args[0]
+    if fn == "mix" and len(args) == 4:
+        return mix(c[args[1]], c[args[2]], float(args[3].rstrip("%")))
+    if fn == "hypr_gradient" and len(args) == 3:
+        return hypr_gradient(c, args[1], args[2])
+    if fn == "shell_gradient" and len(args) == 3:
+        return shell_gradient(c, args[1], args[2])
+    if len(args) == 1:
+        if expr in c:
+            return str(c[expr])
+        for suffix, conv in (
+            ("_strip", lambda v: v.lstrip("#")),
+            ("_rgb", lambda v: ",".join(map(str, rgb(v)))),
+        ):
+            if expr.endswith(suffix) and expr[: -len(suffix)] in c:
+                return conv(c[expr[: -len(suffix)]])
+    raise KeyError(expr)
+
+
+def render(text, c, tpl_name):
+    missing = []
+
+    def sub(m):
+        try:
+            return resolve(m.group(1), c)
+        except (KeyError, ValueError):
+            missing.append(m.group(1))
+            return m.group(0)
+
+    out = PLACEHOLDER.sub(sub, text)
+    if missing:
+        sys.exit(f"{tpl_name}: unknown placeholder(s): {', '.join(sorted(set(missing)))}")
+    return out
+
+
+def build(name):
+    """Return {output_filename: content} for a theme, without writing anything."""
+    c = load_colors(name)
+    out = {}
+    for tpl in sorted(TEMPLATES.glob("*.tpl")):
+        target = tpl.stem  # foot.ini.tpl -> foot.ini
+        override = THEMES / name / target
+        out[target] = override.read_text() if override.exists() else render(tpl.read_text(), c, tpl.name)
+    for extra in ("icons.theme",):
+        p = THEMES / name / extra
+        if p.exists():
+            out[extra] = p.read_text()
+    out["colors.toml"] = (THEMES / name / "colors.toml").read_text()
+    out["name"] = name + "\n"
+    return out, c
+
+
+def write_atomic(path, content):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(content)
+    os.replace(tmp, path)
+
+
+def link(target, link_path):
+    link_path.parent.mkdir(parents=True, exist_ok=True)
+    if link_path.is_symlink() or not link_path.exists():
+        if link_path.is_symlink() and link_path.resolve() == target:
+            return
+        link_path.unlink(missing_ok=True)
+        link_path.symlink_to(target)
+    else:
+        print(f"  ! {link_path} exists and is not a symlink, left alone")
+
+
+# ---------- apply ----------
+
+def run(*cmd):
+    if shutil.which(cmd[0]):
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def running(proc):
+    return subprocess.run(["pgrep", "-x", proc], stdout=subprocess.DEVNULL).returncode == 0
+
+
+def apply_foot_live(c):
+    """Push the new palette into every open terminal via OSC escape codes."""
+    seq = [f"\033]4;{i};{c[k]}\033\\" for i, k in enumerate(
+        ["background", "red", "green", "yellow", "blue", "purple", "cyan", "foreground",
+         "muted", "bright_red", "bright_green", "bright_yellow", "bright_blue",
+         "bright_purple", "bright_cyan", "bright_foreground"])]
+    seq += [
+        f"\033]10;{c['foreground']}\033\\",
+        f"\033]11;{c['background']}\033\\",
+        f"\033]12;{c['bright_foreground']}\033\\",
+        f"\033]17;{c['selection_background']}\033\\",
+        f"\033]19;{c['selection_foreground']}\033\\",
+    ]
+    data = "".join(seq).encode()
+    uid = os.getuid()
+    for pts in Path("/dev/pts").iterdir():
+        if pts.name.isdigit() and pts.stat().st_uid == uid:
+            try:
+                with open(pts, "wb", buffering=0) as f:
+                    f.write(data)
+            except OSError:
+                pass
+
+
+def apply_browser(c):
+    policy_dir = Path("/etc/brave/policies/managed")
+    policy = policy_dir / "theme.json"
+    content = json.dumps({"BrowserThemeColor": c["background"]}) + "\n"
+    try:
+        policy.write_text(content)
+    except OSError:
+        print(f"  ! browser: can't write {policy}. One-time setup:\n"
+              f"      sudo mkdir -p {policy_dir} && sudo install -o $USER /dev/null {policy}")
+        return
+    if running("brave-origin"):
+        run("brave-origin", "--refresh-platform-policy", "--no-startup-window")
+
+
+def apply(name):
+    files, c = build(name)
+    for fname, content in files.items():
+        write_atomic(CURRENT / fname, content)
+
+    # Point apps at the rendered files (idempotent).
+    link(CURRENT / "btop.theme", HOME / ".config/btop/themes/current.theme")
+    link(CURRENT / "yazi.toml", HOME / ".config/yazi/theme.toml")
+    link(CURRENT / "claude.json", HOME / ".claude/themes/theme-switch.json")
+
+    # Live reloads. foot, neovim and Claude Code pick changes up themselves
+    # (foot via OSC below, neovim and Claude Code by watching their files).
+    apply_foot_live(c)
+    run("pkill", "-USR2", "-x", "btop")
+    if running("Hyprland"):
+        run("hyprctl", "reload")
+
+    run("gsettings", "set", "org.gnome.desktop.interface", "color-scheme",
+        "prefer-dark" if c["mode"] == "dark" else "prefer-light")
+    if "icons.theme" in files:
+        run("gsettings", "set", "org.gnome.desktop.interface", "icon-theme",
+            files["icons.theme"].strip())
+
+    apply_browser(c)
+    print(f"theme: {name}")
+
+
+def themes():
+    return sorted(p.parent.name for p in THEMES.glob("*/colors.toml"))
+
+
+def current():
+    try:
+        return (CURRENT / "name").read_text().strip()
+    except OSError:
+        return None
+
+
+def main():
+    args = sys.argv[1:]
+    if not args:
+        cur = current()
+        for t in themes():
+            print(("* " if t == cur else "  ") + t)
+        return
+    name = current() if args[0] == "--reapply" else args[0]
+    if name not in themes():
+        sys.exit(f"unknown theme: {name} (available: {', '.join(themes())})")
+    apply(name)
+
+
+if __name__ == "__main__":
+    main()

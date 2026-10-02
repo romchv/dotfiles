@@ -4,3 +4,6 @@ stow/herdr/.config/herdr/*
 
 # zsh completion cache, regenerated automatically
 .zcompdump*
+
+# python bytecode
+__pycache__/
