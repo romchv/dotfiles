@@ -9,3 +9,6 @@ require("conf.windowrules")
 require("conf.bindings")
 require("conf.input")
 require("conf.animations")
+
+-- Theme colors from theme-switch (overrides the borders in conf/decorations)
+pcall(dofile, os.getenv("HOME") .. "/.local/state/theme/current/hyprland.lua")

@@ -4,6 +4,11 @@
       "rev": "a62e1083a3cfe8b6b206e7d3d33a51091df25357",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
+    "aether": {
+      "rev": "7b64e5dceb6129470e7cf6fe0680b269eeab8c4c",
+      "src": "https://github.com/omacom-io/aether.nvim",
+      "version": "'v3'"
+    },
     "auto-indent.nvim": {
       "rev": "46801cf8857d42a20a73c40b0a5d3dfe8b2b6192",
       "src": "https://github.com/VidocqH/auto-indent.nvim"
