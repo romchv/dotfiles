@@ -14,6 +14,7 @@ PanelWindow {
     property var items: []
     property string query: ""
     property string placeholder: "Search..."
+    property int cardWidth: Style.space.launcherWidth
     property string emptyText: "No matches"
     property string hint: "" // small line under the list, e.g. extra keys
     property alias delegate: list.delegate
@@ -67,7 +68,7 @@ PanelWindow {
         readonly property int fullHeight: field.implicitHeight + column.spacing + Style.launcherRows * picker.rowHeight + pad * 2
 
         section: picker.section
-        width: Math.min(Style.space.launcherWidth, parent.width - Style.space.huge * 2)
+        width: Math.min(picker.cardWidth, parent.width - Style.space.huge * 2)
         height: column.implicitHeight + pad * 2
         anchors.horizontalCenter: parent.horizontalCenter
         y: Math.max(Style.space.huge, (parent.height - fullHeight) / 2)

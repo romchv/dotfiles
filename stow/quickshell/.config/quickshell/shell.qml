@@ -2,6 +2,7 @@
 import Quickshell
 import qs.modules.bar
 import qs.modules.clipboard
+import qs.modules.keybinds
 import qs.modules.launcher
 import qs.modules.lock
 import qs.modules.notifications
@@ -13,6 +14,7 @@ import qs.modules.power
 ShellRoot {
     Bar {}
     ClipboardPicker {}
+    KeybindsPicker {}
     Launcher {}
     Lock {}
     NotificationPopups {}

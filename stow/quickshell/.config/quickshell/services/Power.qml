@@ -21,9 +21,9 @@ Singleton {
         if (!q)
             return actions;
         return actions
-            .map(action => ({ action, score: match(action, q) }))
+            .map((action, index) => ({ action, index, score: match(action, q) }))
             .filter(r => r.score > 0)
-            .sort((a, b) => b.score - a.score)
+            .sort((a, b) => b.score - a.score || a.index - b.index)
             .map(r => r.action);
     }
 

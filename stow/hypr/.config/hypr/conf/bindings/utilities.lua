@@ -25,6 +25,7 @@ hl.bind(mainMod .. " + CTRL + L", exec("loginctl lock-session"), { description =
 -- Quickshell (IpcHandlers in ~/.config/quickshell).
 hl.bind(mainMod .. " + SPACE", exec("qs ipc call launcher toggle"), { description = "App launcher" })
 hl.bind(mainMod .. " + ESCAPE", exec("qs ipc call power toggle"), { description = "Power menu" })
+hl.bind(mainMod .. " + K", exec("qs ipc call keybinds toggle"), { description = "Keybind cheatsheet" })
 hl.bind(mainMod .. " + SHIFT + SPACE", exec("qs ipc call bar toggle"), { description = "Toggle bar" })
 hl.bind(mainMod .. " + COMMA", exec("qs ipc call notifications dismiss"), { description = "Dismiss notification" })
 hl.bind(
@@ -41,7 +42,7 @@ hl.bind(
 -- Not ported (Omarchy-only), free to rebind to your own tools:
 --   menus (SUPER+ALT+SPACE, SUPER+CTRL+C/O/H/S/R,
 --     XF86PowerOff, SUPER+SHIFT+code:201, background SUPER+CTRL+SPACE, theme SUPER+SHIFT+CTRL+SPACE),
---   keybinding viewers (SUPER+K, SUPER+ALT+K, SUPER+CTRL+K), emojis (SUPER+CTRL+E),
+--   keybinding viewers (SUPER+ALT+K, SUPER+CTRL+K), emojis (SUPER+CTRL+E),
 --   calculator (SUPER+CTRL+Q, XF86Calculator),
 --   bar panels (SUPER+CTRL+A/B/D/W/P, SUPER+CTRL+ALT+D, SUPER+CTRL+1..9),
 --   window transparency/gaps/square toggles (SUPER+[SHIFT/CTRL]+BACKSPACE),
