@@ -26,6 +26,7 @@ hl.bind(mainMod .. " + CTRL + L", exec("loginctl lock-session"), { description =
 hl.bind(mainMod .. " + SPACE", exec("qs ipc call launcher toggle"), { description = "App launcher" })
 hl.bind(mainMod .. " + ESCAPE", exec("qs ipc call power toggle"), { description = "Power menu" })
 hl.bind(mainMod .. " + K", exec("qs ipc call keybinds toggle"), { description = "Keybind cheatsheet" })
+hl.bind(mainMod .. " + CTRL + Q", exec("qs ipc call calculator toggle"), { description = "Calculator" })
 hl.bind(mainMod .. " + CTRL + N", exec("qs ipc call nightlight toggle"), { description = "Toggle night light" })
 hl.bind(mainMod .. " + SHIFT + SPACE", exec("qs ipc call bar toggle"), { description = "Toggle bar" })
 hl.bind(mainMod .. " + COMMA", exec("qs ipc call notifications dismiss"), { description = "Dismiss notification" })

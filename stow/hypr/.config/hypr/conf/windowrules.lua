@@ -155,6 +155,14 @@ hl.window_rule({
 	tag = "+floating-window",
 })
 
+-- Quickshell's calculator (SUPER+CTRL+Q): floats, centered, at its own size, opaque.
+hl.window_rule({
+	match = { class = "^org\\.quickshell$", title = "^Calculator$" },
+	float = true,
+	center = true,
+	tag = "-default-opacity",
+})
+
 -- The portal only ever shows dialogs: file pickers, screen shares, permission
 -- prompts, so every one of its windows belongs in the floating treatment,
 -- whatever the app that asked for it titled it.
