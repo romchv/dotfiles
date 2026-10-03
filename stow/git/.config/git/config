@@ -1,0 +1,5 @@
+[user]
+	name = Romain Chauvin
+	email = romchv@proton.me
+[init]
+	defaultBranch = main
