@@ -75,6 +75,8 @@ PanelWindow {
             spacing: Style.space.lg
 
             RowLayout {
+                id: header
+
                 Layout.fillWidth: true
                 spacing: Style.space.xl
 
@@ -120,7 +122,8 @@ PanelWindow {
 
             Flickable {
                 Layout.fillWidth: true
-                implicitHeight: Math.min(lists.implicitHeight, Style.space.popupRowHeight * 12)
+                // Scrolls only once it would run past three quarters of the screen.
+                implicitHeight: Math.min(lists.implicitHeight, root.height * 0.75 - header.implicitHeight)
                 contentHeight: lists.implicitHeight
                 clip: true
                 visible: root.bodyVisible

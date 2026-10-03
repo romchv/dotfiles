@@ -36,6 +36,14 @@ Scope {
     }
 
     IpcHandler {
+        target: "audio"
+
+        function toggle(): void {
+            Panels.toggle("audio");
+        }
+    }
+
+    IpcHandler {
         target: "wifi"
 
         function toggle(): void {
@@ -150,12 +158,8 @@ Scope {
                     screen: bar.modelData
                 }
 
-                BarButton {
-                    text: Audio.icon
-                    size: Style.font.iconMedium
-                    tooltip: Audio.muted ? "Muted" : `Volume ${Math.round(Audio.volume * 100)}%`
-                    onClicked: mouse => mouse.button === Qt.RightButton ? Audio.toggleMute() : Launch.tui("wiremix")
-                    onScrolled: wheel => Audio.setVolume(Audio.volume + (wheel.angleDelta.y > 0 ? 0.05 : -0.05))
+                AudioMenu {
+                    screen: bar.modelData
                 }
 
                 BarButton {
