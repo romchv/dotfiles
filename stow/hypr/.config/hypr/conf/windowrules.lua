@@ -131,6 +131,7 @@ hl.window_rule({
 	match = { class = "PacketTracer" },
 	float = true,
 	center = true,
+	size = { 900, 700 },
 })
 
 hl.window_rule({
