@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Bluetooth
 import Quickshell.Hyprland
 import Quickshell.Io
 import qs.config
@@ -25,6 +24,14 @@ Scope {
 
         function toggle(): void {
             Panels.toggle("claude");
+        }
+    }
+
+    IpcHandler {
+        target: "bluetooth"
+
+        function toggle(): void {
+            Panels.toggle("bluetooth");
         }
     }
 
@@ -127,17 +134,8 @@ Scope {
                     screen: bar.modelData
                 }
 
-                BarButton {
-                    readonly property var adapter: Bluetooth.defaultAdapter
-                    readonly property var connected: Bluetooth.devices.values.filter(d => d.connected)
-                    // Devices first: Quickshell can miss the adapter's power-on at boot
-                    // and stay at Enabling, though a connected device proves it's on.
-                    readonly property bool on: connected.length > 0 || adapter?.enabled || adapter?.state === BluetoothAdapterState.Enabling
-
-                    visible: !!adapter // no bluetooth hardware
-                    text: connected.length > 0 ? "󰂱" : on ? "󰂯" : "󰂲"
-                    tooltip: connected.length > 0 ? connected.map(d => d.name).join(", ") : on ? "Bluetooth on" : "Bluetooth off"
-                    onClicked: Launch.tui("bluetui")
+                BluetoothMenu {
+                    screen: bar.modelData
                 }
 
                 BarButton {

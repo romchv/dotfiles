@@ -2,7 +2,7 @@ pragma Singleton
 
 import Quickshell
 
-// Which overlay is open ("launcher", "clipboard", "keybinds", "power", "wallpapers", "claude", "battery" or ""), shared by their
+// Which overlay is open ("launcher", "clipboard", "keybinds", "power", "wallpapers", "claude", "battery", "bluetooth" or ""), shared by their
 // IPC handlers, the bar and the overlays. One at a time: opening one
 // replaces the other.
 Singleton {
