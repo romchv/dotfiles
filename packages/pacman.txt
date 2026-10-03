@@ -50,6 +50,7 @@ fd
 fzf
 man-db
 man-pages
+bash-completion
 unrar
 unzip
 ripgrep
