@@ -125,6 +125,20 @@ hl.window_rule({
 	size = { 460, 800 },
 })
 
+-- Packet Tracer: every window shares one class, so float them all (device
+-- config windows, dialogs) and tile only the main window, told apart by title.
+hl.window_rule({
+	match = { class = "PacketTracer" },
+	float = true,
+	center = true,
+})
+
+hl.window_rule({
+	match = { class = "PacketTracer", title = "^Cisco Packet Tracer" },
+	float = false,
+	tile = true,
+})
+
 -- Tag terminals so themes, bindings and other rules can single them out.
 -- The class is matched in full, so foot's other app-id needs spelling out.
 hl.window_rule({
