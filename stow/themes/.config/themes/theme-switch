@@ -4,9 +4,16 @@
   theme-switch            list themes (current one marked)
   theme-switch <name>     switch to <name>
   theme-switch --reapply  re-render the current theme (after editing a template)
+  theme-switch --wallpaper  next wallpaper of the current theme
+  theme-switch --wallpaper <path>  that wallpaper of the current theme
 
 A file in themes/<name>/ named like a rendered output (e.g. neovim.lua,
 btop.theme) is copied as-is instead of rendering the template.
+
+Images in themes/<name>/wallpapers/ are the theme's wallpapers, the first by
+name being the default. They go into a generated hyprpaper.conf, which the
+lockscreen and greeter-sync also read. A theme without them keeps the
+current wallpaper.
 """
 
 import json
@@ -23,6 +30,8 @@ THEMES = Path(__file__).resolve().parent
 TEMPLATES = THEMES / "templates"
 STATE = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "theme"
 CURRENT = STATE / "current"
+
+IMAGES = {".png", ".jpg", ".jpeg", ".webp"}
 
 HEX = re.compile(r"^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$")
 PLACEHOLDER = re.compile(r"\{\{\s*(.*?)\s*\}\}")
@@ -124,6 +133,37 @@ def render(text, c, tpl_name):
     return out
 
 
+# ---------- wallpapers ----------
+
+def wallpapers(name):
+    folder = THEMES / name / "wallpapers"
+    return sorted(p for p in folder.glob("*") if p.suffix.lower() in IMAGES)
+
+
+def hyprpaper_conf(image):
+    # An empty monitor applies the wallpaper to every monitor.
+    return f"""wallpaper {{
+    monitor =
+    path = {image}
+    fit_mode = cover
+}}
+
+splash = false
+"""
+
+
+def wallpaper_index():
+    try:
+        return int((CURRENT / "wallpaper-index").read_text())
+    except (OSError, ValueError):
+        return 0
+
+
+def apply_wallpaper(image):
+    if running("hyprpaper"):
+        run("hyprctl", "hyprpaper", "wallpaper", f",{image},cover")
+
+
 # ---------- shell.json (Quickshell reads JSON, not TOML) ----------
 
 def camel(key):
@@ -144,8 +184,9 @@ def qml_color(value):
     return value
 
 
-def shell_json(toml_text, colors):
-    """shell.toml -> JSON with camelCase keys, `section.key` refs resolved."""
+def shell_json(toml_text, colors, walls):
+    """shell.toml -> JSON with camelCase keys, `section.key` refs resolved,
+    plus the theme's name and wallpapers (for the wallpaper picker)."""
     raw = tomllib.loads(toml_text)
 
     def lookup(ref):
@@ -154,7 +195,9 @@ def shell_json(toml_text, colors):
         return lookup(val) if isinstance(val, str) and "." in val and val.split(".")[0] in raw else val
 
     data = {"colors": {camel(k): v for k, v in colors.items() if isinstance(v, str) and HEX.match(v)},
-            "mode": colors["mode"]}
+            "mode": colors["mode"],
+            "name": colors["theme_name"],
+            "wallpapers": [str(w) for w in walls]}
     for section, values in raw.items():
         if not isinstance(values, dict):
             continue
@@ -169,7 +212,7 @@ def shell_json(toml_text, colors):
     return json.dumps(data, indent=2) + "\n"
 
 
-def build(name):
+def build(name, wallpaper=0):
     """Return {output_filename: content} for a theme, without writing anything."""
     c = load_colors(name)
     out = {}
@@ -181,8 +224,13 @@ def build(name):
         p = THEMES / name / extra
         if p.exists():
             out[extra] = p.read_text()
+    walls = wallpapers(name)
     if "shell.toml" in out:
-        out["shell.json"] = shell_json(out["shell.toml"], c)
+        out["shell.json"] = shell_json(out["shell.toml"], c, walls)
+    if walls:
+        wallpaper %= len(walls)
+        out["hyprpaper.conf"] = hyprpaper_conf(walls[wallpaper])
+        out["wallpaper-index"] = f"{wallpaper}\n"
     out["colors.toml"] = (THEMES / name / "colors.toml").read_text()
     out["name"] = name + "\n"
     return out, c
@@ -255,8 +303,8 @@ def apply_browser(c):
         run("brave-origin", "--refresh-platform-policy", "--no-startup-window")
 
 
-def apply(name):
-    files, c = build(name)
+def apply(name, wallpaper=0):
+    files, c = build(name, wallpaper)
     for fname, content in files.items():
         write_atomic(CURRENT / fname, content)
 
@@ -264,6 +312,8 @@ def apply(name):
     link(CURRENT / "btop.theme", HOME / ".config/btop/themes/current.theme")
     link(CURRENT / "yazi.toml", HOME / ".config/yazi/theme.toml")
     link(CURRENT / "claude.json", HOME / ".claude/themes/theme-switch.json")
+    if (CURRENT / "hyprpaper.conf").exists():
+        link(CURRENT / "hyprpaper.conf", HOME / ".config/hypr/hyprpaper.conf")
 
     # Live reloads. foot, neovim and Claude Code pick changes up themselves
     # (foot via OSC below, neovim and Claude Code by watching their files).
@@ -271,6 +321,8 @@ def apply(name):
     run("pkill", "-USR2", "-x", "btop")
     if running("Hyprland"):
         run("hyprctl", "reload")
+    if "hyprpaper.conf" in files:
+        apply_wallpaper(wallpapers(name)[int(files["wallpaper-index"])])
 
     run("gsettings", "set", "org.gnome.desktop.interface", "color-scheme",
         "prefer-dark" if c["mode"] == "dark" else "prefer-light")
@@ -283,6 +335,28 @@ def apply(name):
     if os.access("/etc/greetd/theme", os.W_OK):
         run("greeter-sync")
     print(f"theme: {name}")
+
+
+def set_wallpaper(path=None):
+    """Switch to `path` (one of the current theme's wallpapers) or the next one."""
+    name = current()
+    walls = wallpapers(name) if name else []
+    if not walls:
+        sys.exit(f"theme {name} has no wallpapers")
+    if path is None:
+        i = (wallpaper_index() + 1) % len(walls)
+    else:
+        target = Path(path).resolve()
+        i = next((n for n, w in enumerate(walls) if w.resolve() == target), None)
+        if i is None:
+            sys.exit(f"{path} is not a wallpaper of {name}")
+    write_atomic(CURRENT / "hyprpaper.conf", hyprpaper_conf(walls[i]))
+    write_atomic(CURRENT / "wallpaper-index", f"{i}\n")
+    link(CURRENT / "hyprpaper.conf", HOME / ".config/hypr/hyprpaper.conf")
+    apply_wallpaper(walls[i])
+    if os.access("/etc/greetd/theme", os.W_OK):
+        run("greeter-sync")
+    print(f"wallpaper: {walls[i].name}")
 
 
 def themes():
@@ -303,10 +377,14 @@ def main():
         for t in themes():
             print(("* " if t == cur else "  ") + t)
         return
-    name = current() if args[0] == "--reapply" else args[0]
+    if args[0] == "--wallpaper":
+        set_wallpaper(args[1] if len(args) > 1 else None)
+        return
+    reapply = args[0] == "--reapply"
+    name = current() if reapply else args[0]
     if name not in themes():
         sys.exit(f"unknown theme: {name} (available: {', '.join(themes())})")
-    apply(name)
+    apply(name, wallpaper_index() if reapply else 0)
 
 
 if __name__ == "__main__":
