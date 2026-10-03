@@ -36,6 +36,14 @@ Scope {
     }
 
     IpcHandler {
+        target: "wifi"
+
+        function toggle(): void {
+            Panels.toggle("wifi");
+        }
+    }
+
+    IpcHandler {
         target: "battery"
 
         function toggle(): void {
@@ -138,10 +146,8 @@ Scope {
                     screen: bar.modelData
                 }
 
-                BarButton {
-                    text: Network.icon
-                    tooltip: Network.tooltip
-                    onClicked: Launch.tui("nmtui")
+                WifiMenu {
+                    screen: bar.modelData
                 }
 
                 BarButton {

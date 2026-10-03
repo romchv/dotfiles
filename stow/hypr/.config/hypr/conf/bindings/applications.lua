@@ -57,7 +57,7 @@ hl.bind(mainMod .. " + SHIFT + N", exec(tui("nvim")), { description = "Editor" }
 hl.bind(mainMod .. " + CTRL + T", exec(tui("btop")), { description = "Activity" })
 hl.bind(mainMod .. " + CTRL + A", exec(float_tui("wiremix")), { description = "Audio" })
 hl.bind(mainMod .. " + CTRL + B", exec("qs ipc call bluetooth toggle"), { description = "Bluetooth" })
-hl.bind(mainMod .. " + CTRL + W", exec(float_tui("nmtui")), { description = "Wi-Fi" })
+hl.bind(mainMod .. " + CTRL + W", exec("qs ipc call wifi toggle"), { description = "Wi-Fi" })
 
 -- Web apps.
 hl.bind(mainMod .. " + SHIFT + A", exec(webapp("https://chatgpt.com")), { description = "ChatGPT" })

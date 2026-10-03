@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Hyprland
-import Quickshell.Wayland
 import qs.config
 import qs.components
 import qs.services
@@ -95,284 +94,60 @@ BarButton {
         }
     }
 
-    // A full-screen, see-through layer rather than a bar popup: a popup never
-    // gets the keyboard, so Esc couldn't reach it. Like Picker, it takes the
-    // keyboard while open and a click anywhere outside the card closes it.
-    PanelWindow {
-        id: popup
-
-        readonly property color text: Style.popups.text ?? Style.colors.foreground
-        // Under the glyph, centered on it and kept on screen; read again on each open.
-        readonly property real glyphCenter: root.open ? root.mapToItem(null, root.width / 2, 0).x : 0
-
+    DropdownPanel {
+        target: root
         screen: root.screen
-        anchors {
-            top: true
-            bottom: true
-            left: true
-            right: true
-        }
-        exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.namespace: "quickshell-bluetooth"
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-        color: "transparent"
-        visible: root.open
-        onVisibleChanged: if (visible) card.forceActiveFocus()
+        open: root.open
+        glyph: root.text
+        title: "Bluetooth"
+        status: !root.on ? "Off" : root.adapter?.discovering ? "Scanning" : root.connected.length > 0 ? `${root.connected.length} connected` : "On"
+        checked: root.on
+        bodyVisible: root.on
+        onToggled: if (root.adapter) root.adapter.enabled = !root.on
+        onDismissed: Panels.close()
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: Panels.close()
-        }
+        DropdownSection {
+            id: paired
 
-        Surface {
-            id: card
+            readonly property var list: root.sorted(root.devices.filter(d => d.paired))
 
-            width: Style.space.bluetoothWidth
-            height: content.implicitHeight + Style.space.popupPadding * 2
-            x: Math.max(Style.space.sm, Math.min(popup.width - width - Style.space.sm, popup.glyphCenter - width / 2))
-            y: Style.barHeight + Style.space.sm
-            section: Style.popups
-            focus: true
-            Keys.onEscapePressed: Panels.close()
+            title: "Paired"
+            count: list.length
 
-            // Swallow clicks so they don't reach the close-on-click layer.
-            MouseArea {
-                anchors.fill: parent
+            Repeater {
+                model: paired.list
+
+                DeviceRow {}
             }
+        }
 
-            ColumnLayout {
-                id: content
+        DropdownSection {
+            id: available
 
-                anchors.fill: parent
-                anchors.margins: Style.space.popupPadding
-                spacing: Style.space.lg
+            readonly property var list: root.sorted(root.devices.filter(d => !d.paired))
 
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: Style.space.xl
+            title: "Available"
+            count: list.length
+            empty: root.adapter?.discovering ? "Looking for devices…" : "Nothing nearby"
 
-                    StyledText {
-                        text: root.text
-                        size: Style.font.iconLarge
-                        color: popup.text
-                    }
+            Repeater {
+                model: available.list
 
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 0
-
-                        StyledText {
-                            text: "Bluetooth"
-                            size: Style.font.title
-                            font.bold: true
-                            color: popup.text
-                        }
-
-                        StyledText {
-                            Layout.fillWidth: true
-                            text: !root.on ? "Off" : root.adapter?.discovering ? "Scanning" : root.connected.length > 0 ? `${root.connected.length} connected` : "On"
-                            size: Style.font.caption
-                            font.capitalization: Font.AllUppercase
-                            font.letterSpacing: 1
-                            color: popup.text
-                            opacity: 0.6
-                        }
-                    }
-
-                    Switch {
-                        checked: root.on
-                        onToggled: if (root.adapter) root.adapter.enabled = !root.on
-                    }
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    implicitHeight: 1
-                    color: Style.alpha(popup.text, 0.15)
-                }
-
-                Flickable {
-                    Layout.fillWidth: true
-                    implicitHeight: Math.min(lists.implicitHeight, Style.space.popupRowHeight * 12)
-                    contentHeight: lists.implicitHeight
-                    clip: true
-                    visible: root.on
-                    boundsBehavior: Flickable.StopAtBounds
-
-                    ColumnLayout {
-                        id: lists
-
-                        width: parent.width
-                        spacing: Style.space.panelGap
-
-                        Section {
-                            title: "Paired"
-                            devices: root.sorted(root.devices.filter(d => d.paired))
-                        }
-
-                        Section {
-                            title: "Available"
-                            devices: root.sorted(root.devices.filter(d => !d.paired))
-                            empty: root.adapter?.discovering ? "Looking for devices…" : "Nothing nearby"
-                        }
-                    }
-                }
+                DeviceRow {}
             }
         }
     }
 
-    component Section: ColumnLayout {
-        id: section
-
-        required property string title
-        required property var devices
-        property string empty: ""
-
-        visible: devices.length > 0 || empty !== ""
-        Layout.fillWidth: true
-        spacing: Style.space.xxs
-
-        StyledText {
-            text: section.title
-            size: Style.font.caption
-            font.capitalization: Font.AllUppercase
-            font.letterSpacing: 1
-            color: popup.text
-            opacity: 0.6
-            bottomPadding: Style.space.xs
-        }
-
-        StyledText {
-            visible: section.devices.length === 0
-            text: section.empty
-            size: Style.font.bodySmall
-            color: popup.text
-            opacity: 0.6
-            leftPadding: Style.space.rowPaddingX
-        }
-
-        Repeater {
-            model: section.devices
-
-            DeviceRow {}
-        }
-    }
-
-    component DeviceRow: Item {
-        id: row
-
+    component DeviceRow: DropdownRow {
         required property var modelData
-        readonly property var device: modelData
-        readonly property bool busy: device.pairing || device.state === BluetoothDeviceState.Connecting || device.state === BluetoothDeviceState.Disconnecting
 
-        Layout.fillWidth: true
-        implicitHeight: Style.space.launcherRowHeight
-
-        Rectangle {
-            anchors.fill: parent
-            color: Style.controls.hoverCursorColor ?? "transparent"
-            opacity: area.containsMouse ? (Style.controls.hoverCursorFillAlpha ?? 0.08) : 0
-            border.width: Style.controls.hoverCursorBorderWidth ?? 0
-            border.color: Style.alpha(Style.controls.hoverCursorBorder, Style.controls.hoverCursorBorderAlpha)
-
-            Behavior on opacity {
-                NumberAnimation { duration: Style.anim.fast }
-            }
-        }
-
-        MouseArea {
-            id: area
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: row.busy ? Qt.BusyCursor : Qt.PointingHandCursor
-            onClicked: root.activate(row.device)
-        }
-
-        RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: Style.space.rowPaddingX
-            anchors.rightMargin: Style.space.rowPaddingX
-            spacing: Style.space.xl
-
-            StyledText {
-                Layout.preferredWidth: Style.font.icon * 1.4
-                text: root.glyph(row.device.icon)
-                size: Style.font.icon
-                color: popup.text
-                opacity: row.device.connected ? 1 : 0.6
-                horizontalAlignment: Text.AlignHCenter
-            }
-
-            StyledText {
-                Layout.fillWidth: true
-                text: row.device.name
-                color: popup.text
-                font.bold: row.device.connected
-            }
-
-            StyledText {
-                visible: text !== ""
-                text: root.status(row.device)
-                size: Style.font.caption
-                color: popup.text
-                opacity: 0.6
-            }
-
-            // Forget: only on hover, so a stray click can't unpair.
-            StyledText {
-                visible: row.device.paired && area.containsMouse || forget.containsMouse
-                text: "󰆴"
-                size: Style.font.icon
-                color: forget.containsMouse ? (Style.colors.red ?? popup.text) : popup.text
-                opacity: forget.containsMouse ? 1 : 0.6
-
-                MouseArea {
-                    id: forget
-                    anchors.fill: parent
-                    anchors.margins: -Style.space.sm
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: row.device.forget()
-                }
-            }
-        }
-    }
-
-    component Switch: Item {
-        id: sw
-
-        property bool checked: false
-        signal toggled
-
-        implicitWidth: Style.space.controlHeight * 1.4
-        implicitHeight: Style.space.controlHeight * 0.75
-
-        Rectangle {
-            anchors.fill: parent
-            radius: Style.radius
-            color: Style.alpha(Style.controls.normalColor, sw.checked ? Style.controls.selectedFillAlpha : Style.controls.normalFillAlpha)
-            border.width: Style.controls.normalBorderWidth ?? 1
-            border.color: Style.alpha(Style.controls.normalBorder, Style.controls.normalBorderAlpha)
-
-            Rectangle {
-                width: parent.height - Style.space.xs * 2
-                height: width
-                y: Style.space.xs
-                x: sw.checked ? parent.width - width - Style.space.xs : Style.space.xs
-                radius: Style.radius
-                color: sw.checked ? (Style.colors.accent ?? popup.text) : Style.alpha(popup.text, 0.4)
-
-                Behavior on x {
-                    NumberAnimation { duration: Style.anim.normal; easing.type: Style.anim.easing }
-                }
-            }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: sw.toggled()
-        }
+        glyph: root.glyph(modelData.icon)
+        label: modelData.name
+        status: root.status(modelData)
+        active: modelData.connected
+        busy: modelData.pairing || modelData.state === BluetoothDeviceState.Connecting || modelData.state === BluetoothDeviceState.Disconnecting
+        forgettable: modelData.paired
+        onClicked: root.activate(modelData)
+        onForget: modelData.forget()
     }
 }

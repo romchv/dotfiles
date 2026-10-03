@@ -33,11 +33,16 @@ Singleton {
             return "󰤮";
         if (!network)
             return "󰤯";
-        if (strength < 0.25)
+        return signalGlyph(strength);
+    }
+
+    // Wifi bars for a signal strength from 0 to 1.
+    function signalGlyph(s) {
+        if (s < 0.25)
             return "󰤟";
-        if (strength < 0.5)
+        if (s < 0.5)
             return "󰤢";
-        if (strength < 0.75)
+        if (s < 0.75)
             return "󰤥";
         return "󰤨";
     }

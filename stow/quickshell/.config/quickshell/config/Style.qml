@@ -111,7 +111,7 @@ Singleton {
         readonly property int panelPadding: root._sp("panelPadding", 18)
         readonly property int popupPadding: root._sp("popupPadding", 14)
         readonly property int dropdownWidth: root._sp("dropdownWidth", 240)
-        readonly property int bluetoothWidth: root._sp("bluetoothWidth", 320)
+        readonly property int deviceMenuWidth: root._sp("deviceMenuWidth", 320)
         readonly property int launcherWidth: root._sp("launcherWidth", 300)
         readonly property int cheatsheetWidth: root._sp("cheatsheetWidth", 520)
         readonly property int launcherRowHeight: root._sp("launcherRowHeight", 40)
