@@ -2,6 +2,7 @@
 import Quickshell
 import qs.modules.bar
 import qs.modules.clipboard
+import qs.modules.desktop
 import qs.modules.keybinds
 import qs.modules.launcher
 import qs.modules.lock
@@ -9,11 +10,13 @@ import qs.modules.notifications
 import qs.modules.osd
 import qs.modules.polkit
 import qs.modules.power
+import qs.modules.wallpapers
 
 // Entry point: only instantiates modules. Each module lives in modules/<name>/.
 ShellRoot {
     Bar {}
     ClipboardPicker {}
+    Desktop {}
     KeybindsPicker {}
     Launcher {}
     Lock {}
@@ -21,4 +24,5 @@ ShellRoot {
     Osd {}
     Polkit {}
     PowerMenu {}
+    WallpaperPicker {}
 }
