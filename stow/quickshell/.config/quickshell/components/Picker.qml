@@ -108,9 +108,11 @@ PanelWindow {
                     if (event.key === Qt.Key_Escape)
                         picker.dismissed();
                     else if (event.key === Qt.Key_Down || (ctrl && (event.key === Qt.Key_J || event.key === Qt.Key_N)))
-                        picker.move(1);
+                        // Down on the last row wraps to the first.
+                        picker.move(picker.current === picker.items.length - 1 ? -picker.current : 1);
                     else if (event.key === Qt.Key_Up || (ctrl && (event.key === Qt.Key_K || event.key === Qt.Key_P)))
-                        picker.move(-1);
+                        // Up on the first row wraps to the last.
+                        picker.move(picker.current === 0 ? picker.items.length - 1 : -1);
                     else if (event.key === Qt.Key_PageDown)
                         picker.move(Style.launcherRows);
                     else if (event.key === Qt.Key_PageUp)
