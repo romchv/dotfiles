@@ -4,6 +4,7 @@ import qs.modules.bar
 import qs.modules.calculator
 import qs.modules.clipboard
 import qs.modules.desktop
+import qs.modules.emoji
 import qs.modules.keybinds
 import qs.modules.launcher
 import qs.modules.lock
@@ -19,6 +20,7 @@ ShellRoot {
     Calculator {}
     ClipboardPicker {}
     Desktop {}
+    EmojiPicker {}
     KeybindsPicker {}
     Launcher {}
     Lock {}

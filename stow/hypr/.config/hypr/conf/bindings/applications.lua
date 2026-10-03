@@ -58,7 +58,7 @@ hl.bind(mainMod .. " + CTRL + W", exec("qs ipc call wifi toggle"), { description
 -- Web apps.
 hl.bind(mainMod .. " + SHIFT + A", exec(webapp("https://chatgpt.com")), { description = "ChatGPT" })
 hl.bind(mainMod .. " + SHIFT + C", exec(webapp("https://claude.ai")), { description = "Claude" })
-hl.bind(mainMod .. " + SHIFT + E", exec(webapp("https://mail.proton.me")), { description = "Proton Mail" })
+hl.bind(mainMod .. " + CTRL + M", exec(webapp("https://mail.proton.me")), { description = "Proton Mail" })
 hl.bind(
 	mainMod .. " + SHIFT + ALT + G",
 	exec(webapp_or_focus("https://web.whatsapp.com/")),

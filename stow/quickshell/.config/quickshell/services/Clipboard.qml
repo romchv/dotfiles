@@ -28,6 +28,16 @@ Singleton {
         copier.running = true;
     }
 
+    // Same, for text that isn't in the history yet (the emoji picker).
+    function pasteText(text) {
+        copier.command = ["wl-copy", "--", text];
+        copier.running = true;
+    }
+
+    function copyText(text) {
+        Quickshell.execDetached(["wl-copy", "--", text]);
+    }
+
     function remove(entry) {
         entries = entries.filter(e => e.id !== entry.id);
         Quickshell.execDetached(["sh", "-c", 'printf "%s\\n" "$1" | cliphist delete', "sh", entry.line]);

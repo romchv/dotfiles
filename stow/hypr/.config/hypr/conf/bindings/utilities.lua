@@ -27,6 +27,7 @@ hl.bind(mainMod .. " + SPACE", exec("qs ipc call launcher toggle"), { descriptio
 hl.bind(mainMod .. " + ESCAPE", exec("qs ipc call power toggle"), { description = "Power menu" })
 hl.bind(mainMod .. " + K", exec("qs ipc call keybinds toggle"), { description = "Keybind cheatsheet" })
 hl.bind(mainMod .. " + CTRL + Q", exec("qs ipc call calculator toggle"), { description = "Calculator" })
+hl.bind(mainMod .. " + CTRL + E", exec("qs ipc call emoji toggle"), { description = "Emoji picker" })
 hl.bind(mainMod .. " + CTRL + N", exec("qs ipc call nightlight toggle"), { description = "Toggle night light" })
 hl.bind(mainMod .. " + CTRL + C", exec("qs ipc call claude toggle"), { description = "Claude Code limits" })
 
