@@ -9,7 +9,8 @@ import qs.services
 
 // Wi-Fi in the bar: the glyph shows the connection, a click (or
 // `qs ipc call wifi toggle`, on the focused monitor) opens a dropdown with
-// a power switch, known networks and nearby ones. It scans while open.
+// a power switch, the live connection (ping, speeds, totals, addresses),
+// known networks and nearby ones. It scans and measures only while open.
 // Click a network to connect or disconnect; a new secured one asks for its
 // password in place (Enter connects, Esc cancels). The trash glyph forgets a
 // known one. Enterprise (802.1X) networks go to nmtui.
@@ -34,6 +35,15 @@ BarButton {
     onOpenChanged: if (!open) {
         asking = null;
         failed = null;
+    }
+
+    // Measure only while someone is looking; one bar per screen, so each
+    // menu holds it on only while it's the one open.
+    Binding {
+        target: Network
+        property: "monitoring"
+        value: true
+        when: root.open
     }
 
     // Scan only while someone is looking.
@@ -99,15 +109,34 @@ BarButton {
         title: "Wi-Fi"
         status: !Nm.Networking.wifiEnabled ? "Off" : Network.network ? Network.network.name : root.wifi?.scannerEnabled ? "Scanning" : "Not connected"
         checked: Nm.Networking.wifiEnabled
-        bodyVisible: Nm.Networking.wifiEnabled
         onToggled: Nm.Networking.wifiEnabled = !Nm.Networking.wifiEnabled
         onDismissed: Panels.close()
+
+        DropdownSection {
+            visible: Network.iface !== ""
+            title: "Connection"
+            count: 1
+
+            DetailGrid {
+                details: [
+                    ["Ping", Network.ping >= 0 ? `${Math.round(Network.ping)} ms` : ""],
+                    ["Packet loss", Network.loss >= 0 ? `${Math.round(Network.loss * 100)}%` : ""],
+                    ["Receiving", Network.formatBytes(Network.rxRate, true)],
+                    ["Sending", Network.formatBytes(Network.txRate, true)],
+                    ["Downloaded", Network.formatBytes(Network.rxTotal)],
+                    ["Uploaded", Network.formatBytes(Network.txTotal)],
+                    ["IP address", Network.address],
+                    ["Gateway", Network.gateway]
+                ]
+            }
+        }
 
         DropdownSection {
             id: known
 
             readonly property var list: root.sorted(root.networks.filter(n => n.known))
 
+            visible: Nm.Networking.wifiEnabled && list.length > 0
             title: "Known"
             count: list.length
 
@@ -123,6 +152,7 @@ BarButton {
 
             readonly property var list: root.sorted(root.networks.filter(n => !n.known))
 
+            visible: Nm.Networking.wifiEnabled
             title: "Available"
             count: list.length
             empty: root.wifi?.scannerEnabled ? "Looking for networks…" : "Nothing nearby"

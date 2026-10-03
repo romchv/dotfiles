@@ -54,51 +54,14 @@ BarButton {
             }
         }
 
-        GridLayout {
-            Layout.fillWidth: true
-            columns: 4
-            columnSpacing: Style.space.xl
-            rowSpacing: Style.space.xs
-
-            Stat {
-                name: "Capacity"
-                value: Battery.capacity > 0 ? `${Math.round(Battery.capacity)}Wh` : ""
-            }
-            StatValue {
-                value: Battery.capacity > 0 ? `${Math.round(Battery.capacity)}Wh` : ""
-            }
-
-            Stat {
-                name: "Charge limit"
-                value: Battery.limit
-            }
-            StatValue {
-                value: Battery.limit
-            }
-
-            Stat {
-                name: "Charge cycles"
-                value: Battery.cycles > 0 ? `${Battery.cycles}` : ""
-            }
-            StatValue {
-                value: Battery.cycles > 0 ? `${Battery.cycles}` : ""
-            }
-
-            Stat {
-                name: "State"
-                value: Battery.stateLabel
-            }
-            StatValue {
-                value: Battery.stateLabel
-            }
-
-            Stat {
-                name: "Health"
-                value: Battery.health >= 0 ? `${Battery.health}%` : ""
-            }
-            StatValue {
-                value: Battery.health >= 0 ? `${Battery.health}%` : ""
-            }
+        DetailGrid {
+            details: [
+                ["Capacity", Battery.capacity > 0 ? `${Math.round(Battery.capacity)}Wh` : ""],
+                ["Charge limit", Battery.limit],
+                ["Charge cycles", Battery.cycles > 0 ? `${Battery.cycles}` : ""],
+                ["State", Battery.stateLabel],
+                ["Health", Battery.health >= 0 ? `${Battery.health}%` : ""]
+            ]
         }
 
         DropdownSection {
@@ -130,30 +93,6 @@ BarButton {
                 }
             }
         }
-    }
-
-    // A detail's name, then its value in the next cell; both hide when the
-    // hardware doesn't report it, and the grid closes the gap.
-    component Stat: StyledText {
-        required property string name
-        property string value: ""
-
-        visible: value !== ""
-        text: name
-        size: Style.font.bodySmall
-        color: root.textColor
-        opacity: 0.6
-    }
-
-    component StatValue: StyledText {
-        property string value: ""
-
-        visible: value !== ""
-        Layout.fillWidth: true
-        text: value
-        size: Style.font.bodySmall
-        color: root.textColor
-        horizontalAlignment: Text.AlignRight
     }
 
     component ProfileButton: Rectangle {
