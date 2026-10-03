@@ -4,7 +4,6 @@ noto-fonts-emoji
 noto-fonts-cjk
 ttf-liberation
 ttf-jetbrains-mono-nerd
-yaru-icon-theme
 mpv
 imv
 hyprland
@@ -42,7 +41,6 @@ foot
 stow
 python
 tmux
-herdr
 yazi
 starship
 jq

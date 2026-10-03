@@ -2,3 +2,5 @@ brave-origin-bin
 localsend
 nordvpn-bin
 tree-sitter-cli-git
+herdr-bin
+yaru-icon-theme
