@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Hyprland
 import Quickshell.Io
 import qs.config
 import qs.services
@@ -16,6 +17,22 @@ Scope {
 
         function toggle(): void {
             root.shown = !root.shown;
+        }
+    }
+
+    IpcHandler {
+        target: "claude"
+
+        function toggle(): void {
+            Panels.toggle("claude");
+        }
+    }
+
+    IpcHandler {
+        target: "battery"
+
+        function toggle(): void {
+            Panels.toggle("battery");
         }
     }
 
@@ -106,13 +123,20 @@ Scope {
                     height: parent.height
                 }
 
+                ClaudeLimits {
+                    screen: bar.modelData
+                }
+
                 BarButton {
                     readonly property var adapter: Bluetooth.defaultAdapter
-                    readonly property bool connected: Bluetooth.devices.values.some(d => d.connected)
+                    readonly property var connected: Bluetooth.devices.values.filter(d => d.connected)
+                    // Devices first: Quickshell can miss the adapter's power-on at boot
+                    // and stay at Enabling, though a connected device proves it's on.
+                    readonly property bool on: connected.length > 0 || adapter?.enabled || adapter?.state === BluetoothAdapterState.Enabling
 
                     visible: !!adapter // no bluetooth hardware
-                    text: !adapter?.enabled ? "󰂲" : connected ? "󰂱" : "󰂯"
-                    tooltip: !adapter?.enabled ? "Bluetooth off" : connected ? Bluetooth.devices.values.filter(d => d.connected).map(d => d.name).join(", ") : "Bluetooth on"
+                    text: connected.length > 0 ? "󰂱" : on ? "󰂯" : "󰂲"
+                    tooltip: connected.length > 0 ? connected.map(d => d.name).join(", ") : on ? "Bluetooth on" : "Bluetooth off"
                     onClicked: Launch.tui("bluetui")
                 }
 
@@ -140,6 +164,8 @@ Scope {
                     text: Battery.icon
                     size: Style.font.iconMedium - 1
                     tooltip: `${Battery.percent}% · ${Battery.status}`
+                    pinned: visible && Panels.current === "battery" && Hyprland.focusedMonitor?.name === bar.modelData.name
+                    onDismissed: Panels.close()
                     label.color: Battery.low ? Style.bar.active : (Style.bar.text ?? Style.colors.foreground)
                 }
 

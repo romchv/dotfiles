@@ -11,10 +11,13 @@ Item {
     property int size: Style.font.icon
     property int padding: Style.space.lg
     property string tooltip: ""
+    property bool pinned: false // tooltip held open, see Tooltip
     property alias suffix: suffix.text // optional text after the glyph, at body size
+    readonly property alias hovered: area.containsMouse
 
     signal clicked(var mouse)
     signal scrolled(var wheel)
+    signal dismissed
 
     implicitWidth: content.implicitWidth + padding * 2
     implicitHeight: parent?.height ?? Style.barHeight
@@ -54,6 +57,8 @@ Item {
         target: root
         text: root.tooltip
         shown: area.containsMouse
+        pinned: root.pinned
+        onDismissed: root.dismissed()
     }
 
     MouseArea {
