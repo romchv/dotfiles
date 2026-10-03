@@ -113,11 +113,8 @@ Scope {
                     onClicked: Notifications.dnd = false
                 }
 
-                BarButton {
-                    visible: NightLight.enabled
-                    text: "\u{F0594}"
-                    tooltip: "Night light (click to turn off)"
-                    onClicked: NightLight.enabled = false
+                NightLightMenu {
+                    screen: bar.modelData
                 }
             }
 
