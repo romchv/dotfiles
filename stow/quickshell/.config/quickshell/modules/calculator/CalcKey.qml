@@ -4,7 +4,7 @@ import qs.components
 
 // Calculator keypad button, painted with the [controls] tokens: normal,
 // hover and pressed. `accent` fills it like a selected control (the = key);
-// `dark` sinks it into the darker background (the number pad).
+// `dark` sinks it halfway into the darker background (the number pad).
 Rectangle {
     id: key
 
@@ -20,7 +20,7 @@ Rectangle {
     radius: Style.space.lg
     opacity: enabled ? 1 : 0.3
     color: dark && !mouse.pressed && !mouse.containsMouse
-        ? (Style.colors.darkBackground ?? "black")
+        ? Qt.tint(Style.colors.darkBackground ?? "black", Style.alpha(Style.colors.background, 0.5))
         : Style.alpha(c.normalColor, mouse.pressed ? c.pressedFillAlpha
                                      : mouse.containsMouse ? c.hoverCursorFillAlpha
                                      : accent ? c.selectedFillAlpha : c.normalFillAlpha)
