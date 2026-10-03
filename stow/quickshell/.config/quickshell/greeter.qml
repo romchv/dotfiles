@@ -26,6 +26,8 @@ ShellRoot {
     property bool failed: false
     property string message: ""
 
+    signal shake
+
     function submit() {
         if (busy || text === "")
             return;
@@ -50,7 +52,7 @@ ShellRoot {
         failed = true;
         text = "";
         message = reason;
-        auth.shake();
+        shake();
     }
 
     Connections {
@@ -80,54 +82,83 @@ ShellRoot {
         }
     }
 
-    // cage shows its only window fullscreen.
+    // cage shows its only window fullscreen, stretched across every monitor
+    // (its default -m extend), so give each monitor its own login screen
+    // sized to it; they share the state above, like the lockscreen. The
+    // leftmost one takes keyboard focus.
     FloatingWindow {
+        id: window
+
+        readonly property var screens: [...Quickshell.screens].sort((a, b) => a.x - b.x || a.y - b.y)
+        readonly property int originX: Math.min(...screens.map(s => s.x))
+        readonly property int originY: Math.min(...screens.map(s => s.y))
+
         color: Style.colors.background ?? "black"
         implicitWidth: 1280
         implicitHeight: 800
 
-        AuthScreen {
-            id: auth
+        Repeater {
+            model: window.screens.length ? window.screens : [null]
 
-            anchors.fill: parent
-            autoFocus: !root.askUser
-            wallpaper: Quickshell.env("QS_GREETER_WALLPAPER") ? "file://" + Quickshell.env("QS_GREETER_WALLPAPER") : ""
-            text: root.text
-            busy: root.busy
-            error: root.failed
-            message: root.message
+            AuthScreen {
+                id: auth
 
-            onEdited: text => {
-                root.text = text;
-                if (text !== "")
-                    root.failed = false;
-            }
-            onSubmitted: root.submit()
+                required property var modelData
+                required property int index
+                readonly property bool primary: index === 0
 
-            TextField {
-                id: userField
+                x: modelData ? modelData.x - window.originX : 0
+                y: modelData ? modelData.y - window.originY : 0
+                width: modelData ? modelData.width : window.width
+                height: modelData ? modelData.height : window.height
 
-                visible: root.askUser
-                Layout.preferredWidth: Style.space.lockFieldWidth
-                placeholder: "Username"
-                horizontalAlignment: TextInput.AlignHCenter
-                textColor: auth.l.text
-                placeholderColor: auth.l.placeholder
-                fillColor: Style.alpha(auth.l.background, auth.l.backgroundAlpha)
-                borderWidth: Style.borderWidth
-                borderColor: Style.alpha(auth.l.border, auth.l.borderAlpha)
-                onTextChanged: root.user = text.trim()
-                onAccepted: auth.focusField()
-                Component.onCompleted: if (root.askUser) input.forceActiveFocus()
-            }
+                autoFocus: primary && !root.askUser
+                wallpaper: Quickshell.env("QS_GREETER_WALLPAPER") ? "file://" + Quickshell.env("QS_GREETER_WALLPAPER") : ""
+                text: root.text
+                busy: root.busy
+                error: root.failed
+                message: root.message
 
-            // The user being logged in, when it's fixed.
-            StyledText {
-                visible: !root.askUser
-                Layout.alignment: Qt.AlignHCenter
-                text: root.user
-                size: Style.font.subtitle
-                color: auth.l.text
+                onEdited: text => {
+                    root.text = text;
+                    if (text !== "")
+                        root.failed = false;
+                }
+                onSubmitted: root.submit()
+
+                Connections {
+                    target: root
+                    function onShake() {
+                        auth.shake();
+                    }
+                }
+
+                TextField {
+                    id: userField
+
+                    visible: root.askUser
+                    Layout.preferredWidth: Style.space.lockFieldWidth
+                    placeholder: "Username"
+                    text: root.user
+                    horizontalAlignment: TextInput.AlignHCenter
+                    textColor: auth.l.text
+                    placeholderColor: auth.l.placeholder
+                    fillColor: Style.alpha(auth.l.background, auth.l.backgroundAlpha)
+                    borderWidth: Style.borderWidth
+                    borderColor: Style.alpha(auth.l.border, auth.l.borderAlpha)
+                    onTextChanged: if (root.user !== text.trim()) root.user = text.trim()
+                    onAccepted: auth.focusField()
+                    Component.onCompleted: if (root.askUser && auth.primary) input.forceActiveFocus()
+                }
+
+                // The user being logged in, when it's fixed.
+                StyledText {
+                    visible: !root.askUser
+                    Layout.alignment: Qt.AlignHCenter
+                    text: root.user
+                    size: Style.font.subtitle
+                    color: auth.l.text
+                }
             }
         }
     }

@@ -4,9 +4,10 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.config
 
-// Workspaces of this bar's monitor. Always shows the ones Hyprland's
-// workspace rules pin to the monitor (1-5 when none do), plus any others
-// that exist there. Active: filled square; empty: dimmed.
+// Workspaces of every monitor, the same list on each bar. Always shows the
+// ones Hyprland's workspace rules pin to a monitor (1-5 when none do), plus
+// any others that exist. Active on this bar's monitor: filled square; empty:
+// dimmed. Clicking one on another monitor focuses that monitor.
 Row {
     id: root
 
@@ -15,11 +16,11 @@ Row {
     property var rules: []
 
     readonly property var ids: {
-        const pinned = rules.filter(r => r.monitor === screen.name)
+        const pinned = rules.filter(r => r.monitor)
             .map(r => parseInt(r.workspaceString))
             .filter(n => n > 0);
         const live = Hyprland.workspaces.values
-            .filter(w => w.id > 0 && w.monitor?.name === screen.name)
+            .filter(w => w.id > 0)
             .map(w => w.id);
         return [...new Set([...(pinned.length ? pinned : [1, 2, 3, 4, 5]), ...live])].sort((a, b) => a - b);
     }
