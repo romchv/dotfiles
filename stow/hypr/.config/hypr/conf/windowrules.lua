@@ -131,13 +131,25 @@ hl.window_rule({
 	match = { class = "PacketTracer" },
 	float = true,
 	center = true,
-	size = { 900, 700 },
+	tag = "+packet-tracer-device",
 })
 
 hl.window_rule({
 	match = { class = "PacketTracer", title = "^Cisco Packet Tracer" },
 	float = false,
 	tile = true,
+})
+
+-- Device windows are titled with the bare device name; the main window and
+-- dialogs ("Confirm Delete -- Cisco Packet Tracer") keep their own size.
+hl.window_rule({
+	match = { class = "PacketTracer", title = ".*Cisco Packet Tracer.*" },
+	tag = "-packet-tracer-device",
+})
+
+hl.window_rule({
+	match = { tag = "packet-tracer-device" },
+	size = { 900, 700 },
 })
 
 -- Tag terminals so themes, bindings and other rules can single them out.
