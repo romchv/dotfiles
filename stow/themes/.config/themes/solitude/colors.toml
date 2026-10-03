@@ -1,0 +1,46 @@
+# Solitude — sparse monochrome steel, one ember of red
+# Ported from omarchy-solitude-theme. Named colours follow its ANSI slots, so
+# most "colours" are greys; bright_red is the only warm note.
+
+mode                     = "dark"
+
+# Signal, selection and the de-emphasised ramp
+accent                   = "#798186"
+selection                = "#343d41"
+selection_background     = "#798186"
+selection_foreground     = "#101315"
+muted                    = "#4b4e55"
+
+# Ground, from the deepest surface up to the elevated one
+background               = "#101315"
+dark_background          = "#0c0e10"
+darker_background        = "#08090a"
+lighter_background       = "#1e2326"
+
+# Text, from de-emphasised up to the cursor
+foreground               = "#cacccc"
+dark_foreground          = "#707070"
+light_foreground         = "#d9dbdc"
+bright_foreground        = "#cacccc"
+
+# Window borders: charcoal fading into steel, top to bottom.
+hyprland_active_border   = "rgba(101315ee) rgba(101315ee) rgba(101315ee) rgba(798186ee) rgba(798186ee) rgba(798186ee) rgba(798186ee) rgba(798186ee) 90deg"
+hyprland_inactive_border = "rgb(1e1e1e)"
+
+# Named colours
+red                      = "#565d60"
+yellow                   = "#d9dbdc"
+orange                   = "#de6145"
+green                    = "#9fa5a9"
+cyan                     = "#707070"
+blue                     = "#798186"
+magenta                  = "#aeaeae"
+brown                    = "#cbc2be"
+
+# Bright variants
+bright_red               = "#de6145"
+bright_yellow            = "#c9c2b4"
+bright_green             = "#343d41"
+bright_cyan              = "#707070"
+bright_blue              = "#5d6367"
+bright_magenta           = "#9a9a9a"
