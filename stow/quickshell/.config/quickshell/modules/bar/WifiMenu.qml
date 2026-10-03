@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Networking as Nm
 import qs.config
 import qs.components
@@ -20,7 +19,7 @@ BarButton {
     required property ShellScreen screen
     readonly property var wifi: Network.wifi
     readonly property var networks: wifi?.networks.values.filter(n => n.name !== "") ?? []
-    readonly property bool open: Panels.current === "wifi" && Hyprland.focusedMonitor?.name === screen.name
+    readonly property bool open: Panels.current === "wifi" && Panels.screen === screen.name
 
     // The network whose password field is showing, and the last failure.
     property var asking: null
@@ -29,7 +28,7 @@ BarButton {
 
     text: Network.icon
     tooltip: open ? "" : Network.tooltip
-    onClicked: if (wifi) Panels.toggle("wifi")
+    onClicked: if (wifi) Panels.toggle("wifi", screen.name)
 
     onAskingChanged: if (!asking) panel.refocus()
     onOpenChanged: if (!open) {

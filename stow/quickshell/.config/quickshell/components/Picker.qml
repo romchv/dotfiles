@@ -1,11 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.config
+import qs.services
 
-// Overlay search-and-pick list on the focused monitor (launcher, clipboard).
+// Overlay search-and-pick list on Panels.screen (launcher, clipboard).
 // Type to filter; Up/Down, Ctrl+J/K or Ctrl+N/P, PageUp/PageDown to move;
 // Enter picks; Esc or a click outside closes. Rows are PickerRow delegates.
 PanelWindow {
@@ -41,7 +41,7 @@ PanelWindow {
     onItemsChanged: current = Math.max(0, Math.min(current, items.length - 1))
     onCurrentChanged: list.positionViewAtIndex(current, ListView.Contain)
 
-    screen: Quickshell.screens.find(s => s.name === Hyprland.focusedMonitor?.name) ?? Quickshell.screens[0]
+    screen: Panels.shellScreen
     anchors {
         top: true
         bottom: true

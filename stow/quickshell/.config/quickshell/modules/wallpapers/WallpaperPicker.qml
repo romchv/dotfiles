@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import qs.config
@@ -50,7 +49,7 @@ Scope {
                     Quickshell.execDetached(["theme-switch", "--wallpaper", path]);
             }
 
-            screen: Quickshell.screens.find(s => s.name === Hyprland.focusedMonitor?.name) ?? Quickshell.screens[0]
+            screen: Panels.shellScreen
             anchors {
                 top: true
                 bottom: true

@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
 import qs.config
 import qs.components
@@ -16,12 +15,12 @@ BarButton {
     id: root
 
     required property ShellScreen screen
-    readonly property bool open: Panels.current === "audio" && Hyprland.focusedMonitor?.name === screen.name
+    readonly property bool open: Panels.current === "audio" && Panels.screen === screen.name
 
     text: Audio.icon
     size: Style.font.iconMedium
     tooltip: open ? "" : Audio.muted ? "Muted" : `Volume ${Math.round(Audio.volume * 100)}%`
-    onClicked: mouse => mouse.button === Qt.RightButton ? Audio.toggleMute() : Panels.toggle("audio")
+    onClicked: mouse => mouse.button === Qt.RightButton ? Audio.toggleMute() : Panels.toggle("audio", screen.name)
     onScrolled: wheel => Audio.setVolume(Audio.volume + (wheel.angleDelta.y > 0 ? 0.05 : -0.05))
 
     // Pipewire only fills in volumes for tracked nodes; Audio tracks the

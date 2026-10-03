@@ -92,7 +92,7 @@ Scope {
                 BarButton {
                     text: "󰀻" // apps grid
                     size: Style.font.icon
-                    onClicked: Panels.toggle("launcher")
+                    onClicked: Panels.toggle("launcher", bar.modelData.name)
                 }
 
                 Workspaces {

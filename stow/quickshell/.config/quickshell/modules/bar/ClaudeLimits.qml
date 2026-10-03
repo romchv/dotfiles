@@ -14,14 +14,14 @@ BarButton {
     id: root
 
     required property ShellScreen screen
-    readonly property bool pinned: Panels.current === "claude" && Hyprland.focusedMonitor?.name === screen.name
+    readonly property bool pinned: Panels.current === "claude" && Panels.screen === screen.name
     readonly property bool high: Math.max(ClaudeUsage.session?.percent ?? 0, ClaudeUsage.weekly?.percent ?? 0) >= 80
 
     text: "\u{F06A9}" // robot
     label.color: high ? Style.bar.active : (Style.bar.text ?? Style.colors.foreground)
     onHoveredChanged: if (hovered) ClaudeUsage.refresh(60 * 1000)
     onPinnedChanged: if (pinned) ClaudeUsage.refresh(60 * 1000)
-    onClicked: Panels.toggle("claude")
+    onClicked: Panels.toggle("claude", screen.name)
 
     PopupWindow {
         id: popup

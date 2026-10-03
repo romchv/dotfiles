@@ -26,7 +26,7 @@ Scope {
 
             MouseArea {
                 anchors.fill: parent
-                onDoubleClicked: Panels.open("wallpapers")
+                onDoubleClicked: Panels.open("wallpapers", modelData.name)
             }
         }
     }

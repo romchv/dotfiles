@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Services.UPower
 import qs.config
 import qs.components
@@ -16,7 +15,7 @@ BarButton {
     id: root
 
     required property ShellScreen screen
-    readonly property bool open: Battery.available && Panels.current === "battery" && Hyprland.focusedMonitor?.name === screen.name
+    readonly property bool open: Battery.available && Panels.current === "battery" && Panels.screen === screen.name
     readonly property color textColor: Style.popups.text ?? Style.colors.foreground
 
     visible: Battery.available
@@ -24,7 +23,7 @@ BarButton {
     size: Style.font.iconMedium - 1
     tooltip: open ? "" : `${Battery.percent}% · ${Battery.status}`
     label.color: Battery.low ? Style.bar.active : (Style.bar.text ?? Style.colors.foreground)
-    onClicked: Panels.toggle("battery")
+    onClicked: Panels.toggle("battery", screen.name)
     onOpenChanged: if (open) Battery.refresh()
 
     DropdownPanel {

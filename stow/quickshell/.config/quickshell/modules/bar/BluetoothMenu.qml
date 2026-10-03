@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
-import Quickshell.Hyprland
 import qs.config
 import qs.components
 import qs.services
@@ -23,12 +22,12 @@ BarButton {
     // Devices first: Quickshell can miss the adapter's power-on at boot
     // and stay at Enabling, though a connected device proves it's on.
     readonly property bool on: connected.length > 0 || adapter?.enabled || adapter?.state === BluetoothAdapterState.Enabling
-    readonly property bool open: Panels.current === "bluetooth" && Hyprland.focusedMonitor?.name === screen.name
+    readonly property bool open: Panels.current === "bluetooth" && Panels.screen === screen.name
 
     visible: !!adapter // no bluetooth hardware
     text: connected.length > 0 ? "󰂱" : on ? "󰂯" : "󰂲"
     tooltip: open ? "" : connected.length > 0 ? connected.map(d => d.name).join(", ") : on ? "Bluetooth on" : "Bluetooth off"
-    onClicked: Panels.toggle("bluetooth")
+    onClicked: Panels.toggle("bluetooth", screen.name)
 
     // Scan only while someone is looking: discovery drains batteries and
     // slows audio on some adapters.
