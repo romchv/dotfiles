@@ -6,7 +6,7 @@ import qs.config
 import qs.components
 
 // System tray (StatusNotifierItem): icons of background apps like Steam or
-// NordVPN, folded behind a chevron; hovering the tray reveals them, and they
+// NordVPN, folded to the right of a chevron; hovering the tray reveals them, and they
 // fold back shortly after the pointer leaves (not while a menu is open). Left-click activates
 // (or opens the menu of menu-only items), right-click opens the app's menu
 // (TrayMenu), middle-click and scroll go to the app. Items marked passive
@@ -32,6 +32,13 @@ Row {
         interval: 500
     }
 
+    BarButton {
+        text: "\uf053" // chevron left, open or not
+        size: Style.font.bodySmall
+        padding: Style.space.md
+        label.opacity: 0.7
+    }
+
     Item {
         id: drawer
 
@@ -40,7 +47,7 @@ Row {
         clip: true
 
         Behavior on width {
-            NumberAnimation { duration: Style.anim.normal; easing.type: Style.anim.easing }
+            NumberAnimation { duration: Style.anim.slow; easing.type: Style.anim.easing }
         }
 
         Row {
@@ -114,13 +121,6 @@ Row {
                 }
             }
         }
-    }
-
-    BarButton {
-        text: root.expanded ? "\uf054" : "\uf053" // chevron right / left
-        size: Style.font.bodySmall
-        padding: Style.space.md
-        label.opacity: 0.7
     }
 
     LazyLoader {
