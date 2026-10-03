@@ -11,8 +11,8 @@ import qs.services
 // `qs ipc call bluetooth toggle`, on the focused monitor) opens a dropdown
 // with a power switch, paired devices and nearby ones. It scans while open.
 // Click a paired device to connect or disconnect it, the trash glyph to
-// forget it, a nearby one to pair, trust and connect it. Right-click the
-// glyph for bluetui, which can answer PIN prompts this menu can't.
+// forget it, a nearby one to pair, trust and connect it. Devices that ask
+// for a PIN need bluetui, which can answer the prompt.
 BarButton {
     id: root
 
@@ -28,7 +28,7 @@ BarButton {
     visible: !!adapter // no bluetooth hardware
     text: connected.length > 0 ? "󰂱" : on ? "󰂯" : "󰂲"
     tooltip: open ? "" : connected.length > 0 ? connected.map(d => d.name).join(", ") : on ? "Bluetooth on" : "Bluetooth off"
-    onClicked: mouse => mouse.button === Qt.RightButton ? Launch.tui("bluetui") : Panels.toggle("bluetooth")
+    onClicked: Panels.toggle("bluetooth")
 
     // Scan only while someone is looking: discovery drains batteries and
     // slows audio on some adapters.

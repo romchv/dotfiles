@@ -12,7 +12,7 @@ import qs.services
 // a power switch, known networks and nearby ones. It scans while open.
 // Click a network to connect or disconnect; a new secured one asks for its
 // password in place (Enter connects, Esc cancels). The trash glyph forgets a
-// known one. Enterprise (802.1X) networks and right-clicks go to nmtui.
+// known one. Enterprise (802.1X) networks go to nmtui.
 BarButton {
     id: root
 
@@ -28,7 +28,7 @@ BarButton {
 
     text: Network.icon
     tooltip: open ? "" : Network.tooltip
-    onClicked: mouse => mouse.button === Qt.RightButton || !wifi ? Launch.tui("nmtui") : Panels.toggle("wifi")
+    onClicked: if (wifi) Panels.toggle("wifi")
 
     onAskingChanged: if (!asking) panel.refocus()
     onOpenChanged: if (!open) {
