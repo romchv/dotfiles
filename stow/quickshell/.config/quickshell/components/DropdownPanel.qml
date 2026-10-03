@@ -4,8 +4,9 @@ import Quickshell
 import Quickshell.Wayland
 import qs.config
 
-// A card under a bar glyph (Bluetooth, Wi-Fi): header with a glyph, title,
-// status line and power switch, then a scrolling body of DropdownSections.
+// A card under a bar glyph (Bluetooth, Wi-Fi, audio, battery): header with
+// a glyph, title, status line and either a power switch or a large
+// `headline` value, then a scrolling body of DropdownSections.
 // A full-screen, see-through layer rather than a bar popup: a popup never
 // gets the keyboard, so Esc couldn't reach it. Like Picker, it takes the
 // keyboard while open and a click anywhere outside the card closes it.
@@ -18,6 +19,7 @@ PanelWindow {
     property string title: ""
     property string status: ""
     property bool checked: false
+    property string headline: "" // shown in place of the switch when set
     property bool bodyVisible: true
     default property alias body: lists.data
     readonly property color textColor: Style.popups.text ?? Style.colors.foreground
@@ -109,8 +111,17 @@ PanelWindow {
                 }
 
                 Switch {
+                    visible: root.headline === ""
                     checked: root.checked
                     onToggled: root.toggled()
+                }
+
+                StyledText {
+                    visible: root.headline !== ""
+                    text: root.headline
+                    size: Style.font.displayLarge
+                    font.bold: true
+                    color: root.textColor
                 }
             }
 

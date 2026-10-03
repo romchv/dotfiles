@@ -16,9 +16,10 @@ if [[ -e "$param" ]]; then
   echo N | sudo tee "$param" >/dev/null
 fi
 
-# Services the shell relies on: wifi (NetworkManager) and bluetooth.
-echo "Enabling NetworkManager and bluetooth..."
-sudo systemctl enable NetworkManager.service bluetooth.service
+# Services the shell relies on: wifi (NetworkManager), bluetooth and
+# power profiles (the battery menu).
+echo "Enabling NetworkManager, bluetooth and power profiles..."
+sudo systemctl enable NetworkManager.service bluetooth.service power-profiles-daemon.service
 
 # Login screen: greetd shows the Quickshell greeter (greeter.qml) in cage,
 # then starts Hyprland. The greeter's copies of the config and theme live

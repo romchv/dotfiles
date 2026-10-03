@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Io
 import qs.config
 import qs.services
@@ -167,14 +166,8 @@ Scope {
                     onClicked: Launch.tui("btop")
                 }
 
-                BarButton {
-                    visible: Battery.available // laptops only
-                    text: Battery.icon
-                    size: Style.font.iconMedium - 1
-                    tooltip: `${Battery.percent}% · ${Battery.status}`
-                    pinned: visible && Panels.current === "battery" && Hyprland.focusedMonitor?.name === bar.modelData.name
-                    onDismissed: Panels.close()
-                    label.color: Battery.low ? Style.bar.active : (Style.bar.text ?? Style.colors.foreground)
+                BatteryMenu {
+                    screen: bar.modelData
                 }
 
                 Item {

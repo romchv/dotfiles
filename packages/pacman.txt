@@ -28,6 +28,7 @@ bluez
 bluez-utils
 networkmanager
 upower
+power-profiles-daemon
 wiremix
 wireplumber
 brightnessctl
