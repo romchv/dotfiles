@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Hyprland
+import Quickshell.Wayland
 import qs.config
 import qs.components
 import qs.services
@@ -94,31 +95,51 @@ BarButton {
         }
     }
 
-    PopupWindow {
+    // A full-screen, see-through layer rather than a bar popup: a popup never
+    // gets the keyboard, so Esc couldn't reach it. Like Picker, it takes the
+    // keyboard while open and a click anywhere outside the card closes it.
+    PanelWindow {
         id: popup
 
         readonly property color text: Style.popups.text ?? Style.colors.foreground
+        // Under the glyph, centered on it and kept on screen; read again on each open.
+        readonly property real glyphCenter: root.open ? root.mapToItem(null, root.width / 2, 0).x : 0
 
-        anchor.item: root
-        anchor.edges: Edges.Bottom
-        anchor.gravity: Edges.Bottom
-        anchor.margins.top: Style.space.sm
-        implicitWidth: Style.space.bluetoothWidth
-        implicitHeight: content.implicitHeight + Style.space.popupPadding * 2
+        screen: root.screen
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
+        exclusionMode: ExclusionMode.Ignore
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.namespace: "quickshell-bluetooth"
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
         color: "transparent"
         visible: root.open
+        onVisibleChanged: if (visible) card.forceActiveFocus()
 
-        HyprlandFocusGrab {
-            active: popup.visible
-            windows: [popup]
-            onCleared: Panels.close()
+        MouseArea {
+            anchors.fill: parent
+            onClicked: Panels.close()
         }
 
         Surface {
-            anchors.fill: parent
+            id: card
+
+            width: Style.space.bluetoothWidth
+            height: content.implicitHeight + Style.space.popupPadding * 2
+            x: Math.max(Style.space.sm, Math.min(popup.width - width - Style.space.sm, popup.glyphCenter - width / 2))
+            y: Style.barHeight + Style.space.sm
             section: Style.popups
             focus: true
             Keys.onEscapePressed: Panels.close()
+
+            // Swallow clicks so they don't reach the close-on-click layer.
+            MouseArea {
+                anchors.fill: parent
+            }
 
             ColumnLayout {
                 id: content
