@@ -28,6 +28,13 @@ hl.bind(mainMod .. " + ESCAPE", exec("qs ipc call power toggle"), { description 
 hl.bind(mainMod .. " + K", exec("qs ipc call keybinds toggle"), { description = "Keybind cheatsheet" })
 hl.bind(mainMod .. " + CTRL + Q", exec("qs ipc call calculator toggle"), { description = "Calculator" })
 hl.bind(mainMod .. " + CTRL + N", exec("qs ipc call nightlight toggle"), { description = "Toggle night light" })
+hl.bind(mainMod .. " + CTRL + C", exec("qs ipc call claude toggle"), { description = "Claude Code limits" })
+
+-- Laptops only: the bar shows no battery elsewhere.
+local battery = os.execute("ls /sys/class/power_supply | grep -q ^BAT")
+if battery == true or battery == 0 then
+	hl.bind(mainMod .. " + CTRL + P", exec("qs ipc call battery toggle"), { description = "Battery info" })
+end
 hl.bind(mainMod .. " + SHIFT + SPACE", exec("qs ipc call bar toggle"), { description = "Toggle bar" })
 hl.bind(mainMod .. " + COMMA", exec("qs ipc call notifications dismiss"), { description = "Dismiss notification" })
 hl.bind(

@@ -38,6 +38,11 @@ local function tui(command)
 	return terminal .. " -e " .. command
 end
 
+-- Floating and centered, like the TUIs the bar opens (TUI.float in conf/windowrules.lua).
+local function float_tui(command)
+	return terminal .. " --app-id=TUI.float -e " .. command
+end
+
 -- Essential applications.
 hl.bind(mainMod .. " + RETURN", exec(terminal), { description = "Terminal" })
 hl.bind(mainMod .. " + SHIFT + RETURN", exec(browser), { description = "Browser" })
@@ -50,6 +55,9 @@ hl.bind(mainMod .. " + SHIFT + N", exec(tui("nvim")), { description = "Editor" }
 -- hl.bind(mainMod .. " + SHIFT + M", exec(launch_or_focus("^spotify$", "spotify")), { description = "Music" })
 -- hl.bind(mainMod .. " + SHIFT + D", exec(tui("lazydocker")), { description = "Docker" })
 hl.bind(mainMod .. " + CTRL + T", exec(tui("btop")), { description = "Activity" })
+hl.bind(mainMod .. " + CTRL + A", exec(float_tui("wiremix")), { description = "Audio" })
+hl.bind(mainMod .. " + CTRL + B", exec(float_tui("bluetui")), { description = "Bluetooth" })
+hl.bind(mainMod .. " + CTRL + W", exec(float_tui("nmtui")), { description = "Wi-Fi" })
 
 -- Web apps.
 hl.bind(mainMod .. " + SHIFT + A", exec(webapp("https://chatgpt.com")), { description = "ChatGPT" })
