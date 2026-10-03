@@ -1,0 +1,8 @@
+$include /etc/inputrc
+
+# Case-insensitive completion (down<TAB> -> Downloads)
+set completion-ignore-case on
+# Treat - and _ as equivalent when completing
+set completion-map-case on
+# List all matches right away when it's ambiguous, instead of beeping
+set show-all-if-ambiguous on
