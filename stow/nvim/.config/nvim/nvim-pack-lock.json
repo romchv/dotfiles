@@ -9,6 +9,10 @@
       "src": "https://github.com/omacom-io/aether.nvim",
       "version": "'v3'"
     },
+    "ashen.nvim": {
+      "rev": "bfb04bd50b69d863469b2deb9fb361cf0d945ba7",
+      "src": "https://github.com/ficcdaf/ashen.nvim"
+    },
     "auto-indent.nvim": {
       "rev": "46801cf8857d42a20a73c40b0a5d3dfe8b2b6192",
       "src": "https://github.com/VidocqH/auto-indent.nvim"
