@@ -39,6 +39,7 @@ evince
 nautilus
 neovim
 foot
+xdg-terminal-exec
 stow
 python
 tmux
