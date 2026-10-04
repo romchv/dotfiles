@@ -136,6 +136,12 @@ local servers = {
 		cmd = { vim.fn.stdpath("data") .. "/mason/bin/qmlls", "--import-path", "/usr/lib/qt6/qml" },
 	},
 	postgres_lsp = {},
+	basedpyright = {},
+	ruff = {
+		on_init = function(client)
+			client.server_capabilities.hoverProvider = false -- Hover is provided by basedpyright
+		end,
+	},
 }
 
 require("mason").setup({})
@@ -154,14 +160,11 @@ vim.list_extend(ensure_installed, {
 
 	-- LINTERS
 	"luacheck",
-	"flake8",
 	"eslint_d",
 	"markdownlint-cli2",
 	"shellcheck",
 	-- FORMATTERS
 	"stylua",
-	"isort",
-	"black",
 	"prettierd",
 	"fixjson",
 	"markdownlint-cli2",
