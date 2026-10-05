@@ -74,6 +74,7 @@ Singleton {
         readonly property int heading: root._fs("heading", 16 / 12)
         readonly property int display: root._fs("display", 2)
         readonly property int displayLarge: root._fs("displayLarge", 28 / 12)
+        readonly property int hero: root._fs("hero", 56 / 12) // pomodoro countdown
         readonly property int iconSmall: root._fs("iconSmall", 11 / 12)
         readonly property int icon: root._fs("icon", 14 / 12)
         // Material volume/battery glyphs sit small in their box: this size

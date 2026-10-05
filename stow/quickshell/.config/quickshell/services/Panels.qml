@@ -3,7 +3,7 @@ pragma Singleton
 import Quickshell
 import Quickshell.Hyprland
 
-// Which overlay is open ("launcher", "clipboard", "emoji", "keybinds", "power", "wallpapers", "claude", "battery", "bluetooth", "wifi", "audio", "nightlight" or ""), shared by their
+// Which overlay is open ("launcher", "clipboard", "emoji", "keybinds", "power", "wallpapers", "claude", "battery", "bluetooth", "wifi", "audio", "nightlight", "pomodoro" or ""), shared by their
 // IPC handlers, the bar and the overlays. One at a time: opening one
 // replaces the other.
 // `screen` is the monitor it opens on: the one clicked from the bar, else

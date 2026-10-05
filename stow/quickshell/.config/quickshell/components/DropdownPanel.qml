@@ -6,7 +6,7 @@ import qs.config
 
 // A card under a bar glyph (Bluetooth, Wi-Fi, audio, battery): header with
 // a glyph, title, status line and either a power switch or a large
-// `headline` value, then a scrolling body of DropdownSections.
+// `headline` value or a small boxed `badge`, then a scrolling body of DropdownSections.
 // A full-screen, see-through layer rather than a bar popup: a popup never
 // gets the keyboard, so Esc couldn't reach it. Like Picker, it takes the
 // keyboard while open and a click anywhere outside the card closes it.
@@ -20,6 +20,7 @@ PanelWindow {
     property string status: ""
     property bool checked: false
     property string headline: "" // shown in place of the switch when set
+    property string badge: "" // likewise, small and boxed
     property bool bodyVisible: true
     default property alias body: lists.data
     readonly property color textColor: Style.popups.text ?? Style.colors.foreground
@@ -111,7 +112,7 @@ PanelWindow {
                 }
 
                 Switch {
-                    visible: root.headline === ""
+                    visible: root.headline === "" && root.badge === ""
                     checked: root.checked
                     onToggled: root.toggled()
                 }
@@ -122,6 +123,25 @@ PanelWindow {
                     size: Style.font.displayLarge
                     font.bold: true
                     color: root.textColor
+                }
+
+                Rectangle {
+                    visible: root.badge !== ""
+                    Layout.alignment: Qt.AlignTop
+                    implicitWidth: badgeText.implicitWidth + Style.space.md * 2
+                    implicitHeight: badgeText.implicitHeight + Style.space.xxs * 2
+                    color: "transparent"
+                    radius: Style.radius
+                    border.width: Style.controls.normalBorderWidth ?? 1
+                    border.color: Style.alpha(Style.controls.normalBorder, Style.controls.normalBorderAlpha)
+
+                    StyledText {
+                        id: badgeText
+                        anchors.centerIn: parent
+                        text: root.badge
+                        size: Style.font.bodySmall
+                        color: root.textColor
+                    }
                 }
             }
 

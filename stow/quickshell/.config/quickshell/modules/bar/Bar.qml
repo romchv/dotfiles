@@ -58,6 +58,24 @@ Scope {
         }
     }
 
+    // `toggle` opens the dropdown; the rest drive the timer itself.
+    IpcHandler {
+        target: "pomodoro"
+
+        function toggle(): void {
+            Panels.toggle("pomodoro");
+        }
+        function startPause(): void {
+            Pomodoro.toggle();
+        }
+        function reset(): void {
+            Pomodoro.reset();
+        }
+        function skip(): void {
+            Pomodoro.skip();
+        }
+    }
+
     // Lives here because the bar shows the night light state.
     IpcHandler {
         target: "nightlight"
@@ -111,6 +129,10 @@ Scope {
                     text: "󰂛"
                     tooltip: "Do Not Disturb (click to turn off)"
                     onClicked: Notifications.dnd = false
+                }
+
+                PomodoroMenu {
+                    screen: bar.modelData
                 }
 
                 NightLightMenu {
