@@ -125,30 +125,14 @@ hl.window_rule({
 	size = { 460, 800 },
 })
 
--- Packet Tracer: every window shares one class, so float them all (device
--- config windows, dialogs) and tile only the main window, told apart by title.
+-- Packet Tracer: every window shares one class. Device config windows are
+-- titled with the bare device name; float and size those. Everything titled
+-- "Cisco Packet Tracer" (main window, menus, dialogs) is left to Hyprland's
+-- own heuristics, since menus map with the same title as the main window.
 hl.window_rule({
-	match = { class = "PacketTracer" },
+	match = { class = "PacketTracer", title = "negative:.*Cisco Packet Tracer.*" },
 	float = true,
 	center = true,
-	tag = "+packet-tracer-device",
-})
-
-hl.window_rule({
-	match = { class = "PacketTracer", title = "^Cisco Packet Tracer" },
-	float = false,
-	tile = true,
-})
-
--- Device windows are titled with the bare device name; the main window and
--- dialogs ("Confirm Delete -- Cisco Packet Tracer") keep their own size.
-hl.window_rule({
-	match = { class = "PacketTracer", title = ".*Cisco Packet Tracer.*" },
-	tag = "-packet-tracer-device",
-})
-
-hl.window_rule({
-	match = { tag = "packet-tracer-device" },
 	size = { 900, 700 },
 })
 
