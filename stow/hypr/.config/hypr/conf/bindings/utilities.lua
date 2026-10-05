@@ -30,6 +30,7 @@ hl.bind(mainMod .. " + CTRL + Q", exec("qs ipc call calculator toggle"), { descr
 hl.bind(mainMod .. " + CTRL + E", exec("qs ipc call emoji toggle"), { description = "Emoji picker" })
 hl.bind(mainMod .. " + CTRL + N", exec("qs ipc call nightlight toggle"), { description = "Toggle night light" })
 hl.bind(mainMod .. " + CTRL + C", exec("qs ipc call claude toggle"), { description = "Claude Code limits" })
+hl.bind(mainMod .. " + CTRL + O", exec("qs ipc call pomodoro startPause"), { description = "Start/pause pomodoro" })
 
 -- Laptops only: the bar shows no battery elsewhere.
 local battery = os.execute("ls /sys/class/power_supply | grep -q ^BAT")
