@@ -3,8 +3,9 @@ pragma Singleton
 import Quickshell
 
 // Expression evaluation and number formatting for the calculator overlay.
-// Expressions hold + - * / % ( ) and numbers in base 10, 16 or 2, × and ÷
-// before + and −. `a + b%` adds b percent of a, as on a desk calculator;
+// Expressions hold + - * / ^ % ( ) and numbers in base 10, 16 or 2: ^ first
+// (right to left, -2^2 is -4), then × and ÷, then + and −.
+// `a + b%` adds b percent of a, as on a desk calculator;
 // elsewhere b% is b/100. Bases 16 and 2 work on whole numbers (division
 // truncates, no % or decimals). Missing ")" at the end are implied.
 Singleton {
@@ -37,6 +38,23 @@ Singleton {
             fail(t === undefined ? "Incomplete" : "Invalid input");
         }
 
+        // The exponent may carry its own sign (2^-1) but not a %: 2^2% is 4%.
+        function power() {
+            const b = primary();
+            if (tokens[pos] !== "^")
+                return b;
+            pos++;
+            let sign = 1;
+            while (tokens[pos] === "-" || tokens[pos] === "+") {
+                if (tokens[pos++] === "-")
+                    sign = -sign;
+            }
+            const value = Math.pow(b, sign * power());
+            if (isNaN(value))
+                fail("Not a real number");
+            return base === 10 ? value : Math.trunc(value);
+        }
+
         // { value, percent }: percent is b for a bare `b%`, else null.
         function unary() {
             if (tokens[pos] === "-" || tokens[pos] === "+") {
@@ -44,7 +62,7 @@ Singleton {
                 const u = unary();
                 return negate ? { value: -u.value, percent: u.percent === null ? null : -u.percent } : u;
             }
-            const v = primary();
+            const v = power();
             if (tokens[pos] === "%") {
                 pos++;
                 return { value: v / 100, percent: v };
@@ -109,7 +127,7 @@ Singleton {
                     return null;
                 tokens.push(base === 10 ? parseFloat(run) : parseInt(run, base));
                 i = j;
-            } else if ("+-*/()".includes(c) || (c === "%" && base === 10)) {
+            } else if ("+-*/^()".includes(c) || (c === "%" && base === 10)) {
                 tokens.push(c);
                 i++;
             } else if (c === " ") {

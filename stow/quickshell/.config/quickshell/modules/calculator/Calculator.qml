@@ -10,7 +10,7 @@ import qs.services
 // expression builds up above the result and stays there after =. PRG mode
 // works on whole numbers and shows the value in HEX, DEC and BIN at once;
 // the highlighted row is the base you type in.
-// Keys: digits, a-f, + - * / % ( ) . type; Enter or = evaluates; Backspace
+// Keys: digits, a-f, + - * / ^ % ( ) . type; Enter or = evaluates; Backspace
 // deletes, Delete clears; Tab switches the input base (PRG); Ctrl+M switches
 // mode; Ctrl+C copies the result; Esc closes.
 // A floating window, not an overlay: Hyprland floats and centers it on the
@@ -56,7 +56,7 @@ Scope {
             readonly property var bases: [16, 10, 2]
             readonly property var baseNames: ({ 16: "HEX", 10: "DEC", 2: "BIN" })
             // omacalc's order; both modes keep the operators and = in the last column.
-            readonly property var standardKeys: ["AC", "±", "%", "÷", "7", "8", "9", "×", "4", "5", "6", "−", "1", "2", "3", "+", "0", ".", "⌫", "="]
+            readonly property var standardKeys: ["(", ")", "x²", "xʸ", "AC", "±", "%", "÷", "7", "8", "9", "×", "4", "5", "6", "−", "1", "2", "3", "+", "0", ".", "⌫", "="]
             readonly property var programmerKeys: ["D", "E", "F", "AC", "÷", "A", "B", "C", "(", "×", "7", "8", "9", ")", "−", "4", "5", "6", "⌫", "+", "1", "2", "3", "0", "="]
 
             // While typing, the result follows each complete expression.
@@ -72,7 +72,7 @@ Scope {
                     return parseInt(ch, 16) < base;
                 if (ch === "." || ch === "%")
                     return !programmer;
-                return "+-*/()".includes(ch);
+                return "+-*/^()".includes(ch);
             }
 
             function input(ch) {
@@ -84,13 +84,13 @@ Scope {
                     carried = false;
                     shownExpr = "";
                     // A number starts a new calculation; an operator continues from the result.
-                    if (!"+-*/%)".includes(ch))
+                    if (!"+-*/^%)".includes(ch))
                         expr = "";
                 }
-                if ("+*/".includes(ch)) {
+                if ("+*/^".includes(ch)) {
                     if (expr === "")
                         expr = "0";
-                    expr = expr.replace(/[-+*/]+$/, "");
+                    expr = expr.replace(/[-+*/^]+$/, "");
                 } else if (ch === "-") {
                     expr = expr.replace(/[-+]$/, "");
                 } else if (ch === "%") {
@@ -144,7 +144,7 @@ Scope {
                     return;
                 const before = expr.slice(0, expr.length - m[0].length);
                 const prev = before.slice(-1);
-                const unaryMinus = prev === "-" && (before.length === 1 || /[-+*/(]/.test(before.slice(-2, -1)));
+                const unaryMinus = prev === "-" && (before.length === 1 || /[-+*/^(]/.test(before.slice(-2, -1)));
                 if (unaryMinus)
                     expr = before.slice(0, -1) + m[0];
                 else if (prev === "-" || prev === "+")
@@ -203,6 +203,13 @@ Scope {
                 case "−":
                     input("-");
                     break;
+                case "xʸ":
+                    input("^");
+                    break;
+                case "x²":
+                    input("^");
+                    input("2");
+                    break;
                 default:
                     input(label);
                 }
@@ -244,7 +251,7 @@ Scope {
                     else if (event.key === Qt.Key_Tab || event.key === Qt.Key_Backtab) {
                         if (calc.programmer)
                             calc.cycleBase(event.key === Qt.Key_Backtab ? -1 : 1);
-                    } else if (!ctrl && text.length === 1 && "0123456789abcdefABCDEF.+-*/%()xX".includes(text))
+                    } else if (!ctrl && text.length === 1 && "0123456789abcdefABCDEF.+-*/^%()xX".includes(text))
                         calc.input(text === "x" || text === "X" ? "*" : text.toUpperCase());
                     else
                         return;
@@ -404,7 +411,7 @@ Scope {
                                 label: modelData
                                 accent: modelData === "="
                                 // Everything but the operator column is the number pad.
-                                dark: !"÷×−+=".includes(modelData)
+                                dark: !["÷", "×", "−", "+", "=", "xʸ"].includes(modelData)
                                 textColor: calc.section.text
                                 enabled: modelData.length !== 1 || !"0123456789ABCDEF".includes(modelData) || calc.allowed(modelData)
                                 onClicked: calc.press(modelData)
