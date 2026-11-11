@@ -17,6 +17,9 @@ hl.env("XDG_SESSION_TYPE", "wayland")
 hl.env("LIBVA_DRIVER_NAME", "nvidia")
 hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
 
+-- Editor
+hl.env("EDITOR", "nvim")
+
 hl.config({
 	ecosystem = { no_update_news = true },
 })
