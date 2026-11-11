@@ -76,3 +76,10 @@ end, { desc = "Toggle diagnostics virtual text" })
 
 -- Markdown toggle
 vim.keymap.set("n", "<leader>mt", ":RenderMarkdown toggle<CR>", { desc = "Toggle RenderMarkdown" })
+
+-- vim.keymap.set("i", ";down", "↓")
+-- vim.keymap.set("i", ";up", "↑")
+-- vim.keymap.set("i", ";left", "←")
+-- vim.keymap.set("i", ";right", "→")
+-- vim.keymap.set("i", ";check", "✓")
+-- vim.keymap.set("i", ";cross", "✗")
