@@ -1,0 +1,10 @@
+include "%L"
+
+<Multi_key> <space> <n> : "Romain Chauvin"
+<Multi_key> <space> <e> : "romchv@proton.me"
+<Multi_key> <h> : "⬅️"
+<Multi_key> <l> : "➡️"
+<Multi_key> <k> : "⬆️"
+<Multi_key> <j> : "⬇️"
+<Multi_key> <x> : "❌"
+<Multi_key> <v> : "✅"
